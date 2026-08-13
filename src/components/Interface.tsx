@@ -38,8 +38,10 @@ export function Interface({
           <em>I’m made of.</em>
         </h1>
         <p className="hero-intro">
-          I lead account-opening iOS at Capital One. Before that, I shipped AR glasses
-          and wearable experiences at Meta. These are the building blocks behind the work.
+          I take systems from ambiguous problem to production — industrial cameras bolted
+          to platform-tennis courts, the vision models that track the ball, and the product
+          that calls the lines. Principal Engineer at Capital One; previously shipped Orion
+          AR glasses at Meta. These are the building blocks behind the work.
         </p>
         <a className="resume-button" href="/resume.pdf" target="_blank" rel="noreferrer">
           <span className="resume-document" aria-hidden="true"><i /><i /><i /></span>

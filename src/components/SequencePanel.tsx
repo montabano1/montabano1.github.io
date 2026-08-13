@@ -110,6 +110,17 @@ export function SequencePanel({
             <div className="panel-rule" />
             <p className="panel-detail">{sequence.detail}</p>
 
+            {sequence.stats ? (
+              <dl className="panel-stats">
+                {sequence.stats.map((stat) => (
+                  <div key={stat.label}>
+                    <dt>{stat.label}</dt>
+                    <dd>{stat.value}</dd>
+                  </div>
+                ))}
+              </dl>
+            ) : null}
+
             <ul className="tag-list" aria-label="Related capabilities">
               {sequence.tags.map((tag) => (
                 <li key={tag}>{tag}</li>
@@ -132,13 +143,37 @@ export function SequencePanel({
               </button>
             </div>
 
-            {sequence.action ? (
-              <a className="signal-link" href={sequence.action.href}>
-                {sequence.action.label}
-                <svg viewBox="0 0 24 24" aria-hidden="true">
-                  <path d="M5 12h13M13 6l6 6-6 6" />
-                </svg>
-              </a>
+            {sequence.action || sequence.secondaryAction ? (
+              <div className="signal-links">
+                {sequence.action ? (
+                  <a
+                    className="signal-link"
+                    href={sequence.action.href}
+                    {...(sequence.action.href.startsWith('http')
+                      ? { target: '_blank', rel: 'noreferrer' }
+                      : {})}
+                  >
+                    {sequence.action.label}
+                    <svg viewBox="0 0 24 24" aria-hidden="true">
+                      <path d="M5 12h13M13 6l6 6-6 6" />
+                    </svg>
+                  </a>
+                ) : null}
+                {sequence.secondaryAction ? (
+                  <a
+                    className="signal-link is-secondary"
+                    href={sequence.secondaryAction.href}
+                    {...(sequence.secondaryAction.href.startsWith('http')
+                      ? { target: '_blank', rel: 'noreferrer' }
+                      : {})}
+                  >
+                    {sequence.secondaryAction.label}
+                    <svg viewBox="0 0 24 24" aria-hidden="true">
+                      <path d="M5 12h13M13 6l6 6-6 6" />
+                    </svg>
+                  </a>
+                ) : null}
+              </div>
             ) : null}
           </div>
 

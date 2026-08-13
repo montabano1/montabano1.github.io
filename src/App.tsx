@@ -1,5 +1,6 @@
 import { useReducedMotion } from 'motion/react'
 import { lazy, Suspense, useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { HelixPlaceholder } from './components/HelixPlaceholder'
 import { Interface } from './components/Interface'
 import { SequencePanel } from './components/SequencePanel'
 import { categories, sequences, type CategoryId, type SequenceId } from './data/resume'
@@ -152,7 +153,7 @@ export default function App() {
       </div>
 
       {webglAvailable && sceneMounted ? (
-        <Suspense fallback={<div className="canvas-fallback" aria-hidden="true" />}>
+        <Suspense fallback={<HelixPlaceholder />}>
           <HelixScene
             sequences={sequences}
             selected={selected}
@@ -168,13 +169,8 @@ export default function App() {
             onClose={handleClose}
           />
         </Suspense>
-      ) : webglAvailable ? (
-        <div className="canvas-fallback" aria-hidden="true" />
       ) : (
-        <div className="static-helix" aria-hidden="true">
-          <div className="static-strand strand-a" />
-          <div className="static-strand strand-b" />
-        </div>
+        <HelixPlaceholder />
       )}
 
       <div id="sequence-navigation" tabIndex={-1}>

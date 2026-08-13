@@ -1,0 +1,830 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#020709" />
+    <title>PaddleScreens — a computer-vision case study · Michael Montalbano</title>
+    <meta
+      name="description"
+      content="How PaddleScreens works end to end: industrial cameras on real platform-tennis courts, on-camera detection, dual-view sync and calibration, ball tracking, pose estimation, court segmentation, 3D flight solving, and automatic match transcripts."
+    />
+    <link rel="canonical" href="https://www.michaelmontalbano.com/paddlescreens/" />
+
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="Michael Montalbano" />
+    <meta property="og:url" content="https://www.michaelmontalbano.com/paddlescreens/" />
+    <meta property="og:title" content="PaddleScreens — a computer-vision case study" />
+    <meta
+      property="og:description"
+      content="Cameras bolted to real courts, models trained at home, line calls solved in 3D. The full hardware-to-product pipeline, honestly measured."
+    />
+    <meta
+      property="og:image"
+      content="https://www.michaelmontalbano.com/media/paddlescreens-overlay-poster.jpg"
+    />
+    <meta property="og:image:width" content="1280" />
+    <meta property="og:image:height" content="720" />
+    <meta
+      property="og:image:alt"
+      content="A platform tennis match with live computer-vision overlays: ball flight, court segmentation, and player pose"
+    />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="PaddleScreens — a computer-vision case study" />
+    <meta
+      name="twitter:description"
+      content="Cameras bolted to real courts, models trained at home, line calls solved in 3D."
+    />
+    <meta
+      name="twitter:image"
+      content="https://www.michaelmontalbano.com/media/paddlescreens-overlay-poster.jpg"
+    />
+
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght,SOFT,WONK@9..144,400..700,0..100,0..1&family=Manrope:wght@300;400;500;600;700&display=swap');
+
+      :root {
+        color-scheme: dark;
+        --ink: #f5f1e8;
+        --muted: #a2aeb9;
+        --dim: #77857f;
+        --accent: #ffb15c;
+        --accent-deep: #ef7e27;
+        --hairline: rgba(255, 247, 226, 0.13);
+        --card: rgba(15, 19, 30, 0.72);
+        --bg: #0a0d15;
+      }
+
+      * { box-sizing: border-box; }
+
+      html {
+        scroll-behavior: smooth;
+      }
+
+      body {
+        margin: 0;
+        color: var(--ink);
+        font-family: 'Manrope', sans-serif;
+        font-weight: 300;
+        background:
+          radial-gradient(circle at 85% 4%, rgba(255, 177, 92, 0.09), transparent 32%),
+          radial-gradient(circle at 4% 38%, rgba(98, 230, 210, 0.05), transparent 30%),
+          var(--bg);
+        text-rendering: optimizeLegibility;
+      }
+
+      a { color: inherit; }
+
+      .wrap {
+        width: min(1060px, calc(100% - 48px));
+        margin: 0 auto;
+      }
+
+      .top-bar {
+        position: sticky;
+        top: 0;
+        z-index: 20;
+        border-bottom: 1px solid var(--hairline);
+        background: rgba(8, 11, 18, 0.82);
+        backdrop-filter: blur(14px);
+      }
+
+      .top-bar .wrap {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 18px;
+        padding: 14px 0;
+        font-size: 10px;
+        font-weight: 600;
+        letter-spacing: 0.11em;
+        text-transform: uppercase;
+      }
+
+      .top-bar a {
+        color: var(--muted);
+        text-decoration: none;
+        transition: color 180ms ease;
+      }
+
+      .top-bar a:hover { color: #fff; }
+
+      .top-bar .demo-link { color: var(--accent); }
+
+      .hero {
+        padding: clamp(56px, 9vh, 110px) 0 clamp(30px, 5vh, 56px);
+      }
+
+      .kicker {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin: 0 0 22px;
+        color: var(--accent);
+        font-size: 10px;
+        font-weight: 700;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+      }
+
+      .kicker::before {
+        width: 24px;
+        height: 2px;
+        background: linear-gradient(90deg, var(--accent), var(--accent-deep));
+        content: '';
+      }
+
+      h1 {
+        margin: 0;
+        font-family: 'Fraunces', serif;
+        font-size: clamp(46px, 7vw, 92px);
+        font-weight: 400;
+        line-height: 0.95;
+        letter-spacing: -0.04em;
+        text-wrap: balance;
+      }
+
+      h1 em {
+        color: var(--accent);
+        font-style: normal;
+      }
+
+      .lede {
+        max-width: 640px;
+        margin: 26px 0 0;
+        color: var(--muted);
+        font-size: clamp(15px, 1.3vw, 18px);
+        line-height: 1.75;
+      }
+
+      .lede strong { color: var(--ink); font-weight: 600; }
+
+      .cta-row {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 14px 26px;
+        margin-top: 30px;
+      }
+
+      .cta {
+        display: inline-flex;
+        align-items: center;
+        gap: 11px;
+        padding: 13px 22px;
+        border: 1px solid rgba(255, 177, 92, 0.4);
+        border-radius: 15px;
+        color: #ffd9ae;
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 0.05em;
+        text-decoration: none;
+        text-transform: uppercase;
+        background: linear-gradient(120deg, rgba(255, 177, 92, 0.14), rgba(239, 126, 39, 0.07));
+        transition: border-color 200ms ease, transform 200ms ease;
+      }
+
+      .cta:hover {
+        border-color: rgba(255, 177, 92, 0.8);
+        transform: translateY(-2px);
+      }
+
+      .cta.ghost {
+        border-color: var(--hairline);
+        color: var(--muted);
+        background: none;
+      }
+
+      .video-frame {
+        position: relative;
+        margin: clamp(30px, 5vh, 54px) 0 12px;
+        overflow: hidden;
+        border: 1px solid var(--hairline);
+        border-radius: 22px;
+        background: #05070c;
+        box-shadow: 0 30px 80px rgba(0, 0, 0, 0.45);
+      }
+
+      .video-frame video {
+        display: block;
+        width: 100%;
+        height: auto;
+      }
+
+      .caption {
+        margin: 14px auto 0;
+        max-width: 760px;
+        color: var(--dim);
+        font-size: 12px;
+        line-height: 1.7;
+        text-align: center;
+      }
+
+      .caption b { color: var(--muted); font-weight: 600; }
+
+      section {
+        padding: clamp(40px, 7vh, 76px) 0 0;
+        scroll-margin-top: 56px;
+      }
+
+      .section-head {
+        display: flex;
+        align-items: baseline;
+        gap: 16px;
+        margin-bottom: 8px;
+      }
+
+      .section-head span {
+        color: var(--accent);
+        font-size: 10px;
+        font-weight: 700;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+      }
+
+      h2 {
+        margin: 0 0 18px;
+        font-family: 'Fraunces', serif;
+        font-size: clamp(30px, 3.6vw, 46px);
+        font-weight: 400;
+        letter-spacing: -0.03em;
+      }
+
+      .prose {
+        max-width: 660px;
+        color: var(--muted);
+        font-size: 15px;
+        line-height: 1.85;
+      }
+
+      .prose strong { color: var(--ink); font-weight: 600; }
+
+      .stat-band {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        gap: 14px;
+        margin-top: 34px;
+      }
+
+      .stat {
+        padding: 20px 22px;
+        border: 1px solid var(--hairline);
+        border-radius: 18px;
+        background: var(--card);
+      }
+
+      .stat b {
+        display: block;
+        font-family: 'Fraunces', serif;
+        font-size: clamp(28px, 3vw, 40px);
+        font-weight: 400;
+        color: var(--accent);
+      }
+
+      .stat span {
+        display: block;
+        margin-top: 7px;
+        color: var(--dim);
+        font-size: 9px;
+        font-weight: 600;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+      }
+
+      .pipeline {
+        display: grid;
+        gap: 10px;
+        margin-top: 34px;
+      }
+
+      .pipe-stage {
+        position: relative;
+        display: grid;
+        grid-template-columns: 44px 1fr;
+        gap: 18px;
+        padding: 20px 22px;
+        border: 1px solid var(--hairline);
+        border-radius: 18px;
+        background: var(--card);
+      }
+
+      .pipe-stage:not(:last-child)::after {
+        position: absolute;
+        bottom: -14px;
+        left: 42px;
+        z-index: 1;
+        color: var(--accent-deep);
+        font-size: 13px;
+        content: '↓';
+      }
+
+      .pipe-num {
+        display: grid;
+        place-items: center;
+        width: 40px;
+        height: 40px;
+        border: 1px solid rgba(255, 177, 92, 0.35);
+        border-radius: 12px;
+        color: var(--accent);
+        font-family: 'Fraunces', serif;
+        font-size: 17px;
+        background: rgba(255, 177, 92, 0.07);
+      }
+
+      .pipe-stage h3 {
+        margin: 0 0 7px;
+        font-size: 15px;
+        font-weight: 600;
+        letter-spacing: 0.01em;
+      }
+
+      .pipe-stage h3 small {
+        margin-left: 10px;
+        color: var(--dim);
+        font-size: 9px;
+        font-weight: 600;
+        letter-spacing: 0.11em;
+        text-transform: uppercase;
+      }
+
+      .pipe-stage p {
+        margin: 0;
+        color: var(--muted);
+        font-size: 13px;
+        line-height: 1.75;
+      }
+
+      .linecall-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 22px;
+        align-items: start;
+        margin-top: 30px;
+      }
+
+      .linecall-grid .video-frame { margin: 0; }
+
+      @media (max-width: 760px) {
+        .linecall-grid { grid-template-columns: 1fr; }
+      }
+
+      .model-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+        gap: 12px;
+        margin-top: 30px;
+      }
+
+      .model-card {
+        padding: 18px 20px;
+        border: 1px solid var(--hairline);
+        border-radius: 16px;
+        background: var(--card);
+      }
+
+      .model-card h3 {
+        margin: 0 0 8px;
+        color: var(--accent);
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+      }
+
+      .model-card p {
+        margin: 0;
+        color: var(--muted);
+        font-size: 12.5px;
+        line-height: 1.7;
+      }
+
+      .honest {
+        margin-top: 30px;
+        padding: 26px 28px;
+        border: 1px solid rgba(255, 177, 92, 0.22);
+        border-radius: 20px;
+        background: rgba(255, 177, 92, 0.045);
+      }
+
+      .honest ul {
+        margin: 0;
+        padding-left: 18px;
+        color: var(--muted);
+        font-size: 14px;
+        line-height: 2;
+      }
+
+      .honest li::marker { color: var(--accent-deep); }
+
+      .honest b { color: var(--ink); font-weight: 600; }
+
+      .demo-banner {
+        margin-top: clamp(48px, 8vh, 84px);
+        padding: clamp(30px, 5vw, 52px);
+        border: 1px solid rgba(255, 177, 92, 0.25);
+        border-radius: 26px;
+        text-align: center;
+        background:
+          radial-gradient(circle at 50% 0%, rgba(255, 177, 92, 0.12), transparent 60%),
+          var(--card);
+      }
+
+      .demo-banner h2 { margin-bottom: 10px; }
+
+      .demo-banner p {
+        max-width: 520px;
+        margin: 0 auto 24px;
+        color: var(--muted);
+        font-size: 14px;
+        line-height: 1.75;
+      }
+
+      footer {
+        margin-top: clamp(48px, 8vh, 90px);
+        border-top: 1px solid var(--hairline);
+      }
+
+      footer .wrap {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px 24px;
+        padding: 26px 0 34px;
+        color: var(--dim);
+        font-size: 10px;
+        font-weight: 600;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+      }
+
+      footer a {
+        color: var(--muted);
+        text-decoration: none;
+      }
+
+      footer a:hover { color: #fff; }
+
+      footer nav { display: flex; gap: 20px; }
+
+      @media (max-width: 640px) {
+        .wrap { width: calc(100% - 32px); }
+        .top-bar .wrap { font-size: 8.5px; gap: 10px; }
+        .pipe-stage { grid-template-columns: 34px 1fr; gap: 13px; padding: 16px; }
+        .pipe-num { width: 32px; height: 32px; font-size: 14px; border-radius: 9px; }
+        .pipe-stage:not(:last-child)::after { left: 30px; }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="top-bar">
+      <div class="wrap">
+        <a href="/#work-paddlescreens">← Michael Montalbano</a>
+        <a class="demo-link" href="https://www.paddlescreens.com/demo" target="_blank" rel="noreferrer">
+          Try the live demo ↗
+        </a>
+      </div>
+    </div>
+
+    <main class="wrap">
+      <header class="hero">
+        <p class="kicker">Case study · Computer vision in production</p>
+        <h1>Cameras on the court.<br /><em>Models on the ball.</em></h1>
+        <p class="lede">
+          PaddleScreens records, analyzes, and scores platform-tennis matches with
+          <strong>no camera operator and no wearables</strong> — members scan a QR code, play,
+          and the match is tracked, transcribed shot by shot, and ready before they leave the
+          club. I built every layer: the cameras on the court, the models that watch them, and
+          the product people use.
+        </p>
+        <div class="cta-row">
+          <a class="cta" href="https://www.paddlescreens.com/demo" target="_blank" rel="noreferrer">
+            Try the live demo ↗
+          </a>
+          <a class="cta ghost" href="#pipeline">See how it works ↓</a>
+        </div>
+      </header>
+
+      <div class="video-frame">
+        <video
+          autoplay
+          muted
+          loop
+          playsinline
+          preload="metadata"
+          poster="/media/paddlescreens-overlay-poster.jpg"
+          src="/media/paddlescreens-overlay.mp4"
+        ></video>
+      </div>
+      <p class="caption">
+        One camera view with every perception layer drawn live: <b>ball flight</b> in red,
+        <b>court segmentation</b> in green, <b>player pose</b> skeletons, and <b>paddle
+        detection</b> in yellow. The status line along the bottom reports what each model sees
+        on every frame.
+      </p>
+
+      <section>
+        <div class="section-head"><span>01</span></div>
+        <h2>The problem</h2>
+        <p class="prose">
+          Platform tennis is played outdoors, in winter, inside a wire cage — a brutal
+          environment for sports video. Clubs wanted match replays, close line calls, coaching
+          film, and stats, but nothing existed short of a human with a camera. The court is
+          reflective, the ball is small and fast, players occlude each other constantly, and
+          whatever runs has to survive snow, glare, and zero on-site staff.
+        </p>
+        <div class="stat-band">
+          <div class="stat"><b>2</b><span>cameras per court</span></div>
+          <div class="stat"><b>250+</b><span>sessions recorded</span></div>
+          <div class="stat"><b>500+</b><span>match videos</span></div>
+          <div class="stat"><b>1080p60</b><span>dual-view capture</span></div>
+        </div>
+      </section>
+
+      <section id="pipeline">
+        <div class="section-head"><span>02</span></div>
+        <h2>The pipeline</h2>
+        <p class="prose">
+          Two industrial Axis cameras watch each court from opposite ends. From there, every
+          stage is purpose-built:
+        </p>
+        <div class="pipeline">
+          <div class="pipe-stage">
+            <div class="pipe-num">1</div>
+            <div>
+              <h3>Capture <small>QR-activated · Axis cameras</small></h3>
+              <p>
+                Members activate recording by scanning a QR code at the court — no staff, no app
+                install, no camera operator. An experimental 180&nbsp;KB int8 detector also runs
+                on the camera's own AI chip via Axis ACAP.
+              </p>
+            </div>
+          </div>
+          <div class="pipe-stage">
+            <div class="pipe-num">2</div>
+            <div>
+              <h3>Sync &amp; calibration <small>Dual-view geometry</small></h3>
+              <p>
+                The views are time-aligned from the physics of the game itself — sub-frame bounce
+                changepoints matched across cameras, with rolling-shutter skew explicitly modeled.
+                Both cameras are calibrated jointly against the court's known geometry, and three
+                physics assertions hard-fail the run if the world comes out wrong.
+              </p>
+            </div>
+          </div>
+          <div class="pipe-stage">
+            <div class="pipe-num">3</div>
+            <div>
+              <h3>Perception <small>TensorRT · 1.4× realtime</small></h3>
+              <p>
+                Ball tracking every frame, pose at 15&nbsp;Hz, court keypoints at 1&nbsp;Hz, plus
+                paddle detection — over both views concurrently at 84&nbsp;fps per view on a
+                single RTX&nbsp;4090. The overlay video above is this stage drawn onto real match
+                footage.
+              </p>
+            </div>
+          </div>
+          <div class="pipe-stage">
+            <div class="pipe-num">4</div>
+            <div>
+              <h3>3D flight solving <small>The trajectory is the event detector</small></h3>
+              <p>
+                Dual-view detections triangulate into a 3D ball track, and ballistic arcs are
+                fitted to it. Every deviation is an impulse that classifies itself by geometry: a
+                sign flip at z&nbsp;≈&nbsp;0 is a bounce, an impulse at a cage plane is a screen,
+                mid-air is a paddle contact. Moving events into 3D needed zero training labels.
+              </p>
+            </div>
+          </div>
+          <div class="pipe-stage">
+            <div class="pipe-num">5</div>
+            <div>
+              <h3>Identity &amp; transcript <small>Court coordinates, not pixels</small></h3>
+              <p>
+                A ReID-first tracker holds four fixed player identities across both views in court
+                feet — including through changeovers — and flights, contacts, and poses become a
+                shot-by-shot transcript: serve, drive, lob, overhead, volley, attributed to
+                players and linked to video.
+              </p>
+            </div>
+          </div>
+          <div class="pipe-stage">
+            <div class="pipe-num">6</div>
+            <div>
+              <h3>Product <small>paddlescreens.com</small></h3>
+              <p>
+                A web app where members watch dual-view replays, jump through the shot log,
+                filter by player or shot type, review stats, and challenge line calls. Clubs get
+                live streams and a full video-coaching workspace.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section>
+        <div class="section-head"><span>03</span></div>
+        <h2>Line calls, solved in 3D</h2>
+        <p class="prose">
+          When a call is challenged, the solver fits gravity-constrained flight paths through the
+          frames before and after the bounce, solves where the ball's contact patch touched the
+          deck, and renders the verdict — with its own uncertainty on screen. Calls are reported
+          as a probability, not a pronouncement: per-axis confidence is sub-inch, and the
+          independent before/after solutions are required to agree.
+        </p>
+        <div class="linecall-grid">
+          <div>
+            <div class="video-frame">
+              <video
+                autoplay
+                muted
+                loop
+                playsinline
+                preload="metadata"
+                poster="/media/paddlescreens-linecall-poster.jpg"
+                src="/media/paddlescreens-linecall.mp4"
+              ></video>
+            </div>
+            <p class="caption">
+              A solved challenge: 57&nbsp;ft/s at 23° descent, contact mark 3.22&nbsp;×&nbsp;1.54
+              in — <b>IN by 1.39 in</b>, with the before/after solutions agreeing to 2.3 in.
+            </p>
+          </div>
+          <div>
+            <div class="video-frame">
+              <video
+                autoplay
+                muted
+                loop
+                playsinline
+                preload="metadata"
+                poster="/media/paddlescreens-hawkeye-poster.jpg"
+                src="/media/paddlescreens-hawkeye.mp4"
+              ></video>
+            </div>
+            <p class="caption">
+              The flyover render members see on a challenge — the camera orbits the solved
+              trajectory into the bounce mark.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <section>
+        <div class="section-head"><span>04</span></div>
+        <h2>The models</h2>
+        <p class="prose">
+          Roughly <strong>twenty trained models across eight families</strong>, every one trained
+          and evaluated on footage from the real installed cameras — not public datasets. The
+          deployment ladder runs from batch processing on a home RTX&nbsp;4090, to realtime
+          streaming on AWS T4s, to a Jetson Orin Nano at the court, down to a 180&nbsp;KB int8
+          model inside the camera itself.
+        </p>
+        <div class="model-grid">
+          <div class="model-card">
+            <h3>Ball tracking</h3>
+            <p>
+              Five-frame detection tuned for a small, fast ball against wire fencing and snow.
+              F1 .928 at precision .970 on a human-labeled 65-view benchmark that includes
+              deliberately adversarial views; TensorRT export verified at 100% parity within
+              3&nbsp;px.
+            </p>
+          </div>
+          <div class="model-card">
+            <h3>Court keypoints</h3>
+            <p>
+              Finds all 18 court keypoints with a mean error of 1.19&nbsp;px — the geometric
+              anchor that calibration, 3D solving, and line calls all build on.
+            </p>
+          </div>
+          <div class="model-card">
+            <h3>Player pose</h3>
+            <p>
+              Full-body keypoints for all four players at 15&nbsp;Hz, tracked through occlusion
+              as they cross, screen each other, and play off the cage.
+            </p>
+          </div>
+          <div class="model-card">
+            <h3>Paddle detection</h3>
+            <p>
+              A genuinely small-object problem — the median paddle is 42&nbsp;px square. The
+              production detector reaches box mAP50 .910 and cut worst-venue contact-frame error
+              from 106&nbsp;px to 23&nbsp;px.
+            </p>
+          </div>
+          <div class="model-card">
+            <h3>Shot classification</h3>
+            <p>
+              Labels every stroke — drive, volley, lob, overhead — at .954 accuracy on held-out
+              folds, powering the searchable match transcript.
+            </p>
+          </div>
+          <div class="model-card">
+            <h3>Identity tracking</h3>
+            <p>
+              Four fixed player identities held across both views in court coordinates — a full
+              match tracked with zero identity switches and both changeovers detected, at
+              0.31&nbsp;ms per sample.
+            </p>
+          </div>
+          <div class="model-card">
+            <h3>Phantom filter</h3>
+            <p>
+              Score and geometry gates that cut false ball detections from 34.9 to 3.4 per
+              thousand kept — because one phantom can poison an entire 3D solve.
+            </p>
+          </div>
+          <div class="model-card">
+            <h3>Edge models</h3>
+            <p>
+              Distilled int8 detectors — down to an 8&nbsp;KB ball net — exported for the
+              camera's own DLPU and the Jetson at the court.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <section>
+        <div class="section-head"><span>05</span></div>
+        <h2>Honest numbers</h2>
+        <p class="prose">
+          Sports-CV demos are easy to fake and production is unforgiving, so the program is run
+          on measurements — and the measurements are attacked before they're believed:
+        </p>
+        <div class="honest">
+          <ul>
+            <li>
+              <b>The most defensible headline: .785 F1</b> for whole-video event detection on a
+              held-out match, scored with no silencing whatsoever. The most interesting document
+              in the repo is the self-audit that <b>lowered</b> the previously published number
+              by six points after finding the metric had been quietly forgiven 39% of the
+              footage.
+            </li>
+            <li>
+              <b>Geometry beat the model.</b> Moving event detection from single-view 2D to
+              dual-view 3D bought +24 points of contact recall and +57 points of bounce recall —
+              with zero additional training labels.
+            </li>
+            <li>
+              <b>Every metric gets tested on a known-wrong change.</b> That rule exists because a
+              pixel-perfect 1.19&nbsp;px court fit once placed the camera 12.7&nbsp;ft
+              <i>below</i> the deck — and every downstream number still read healthy.
+            </li>
+            <li>
+              <b>Scale:</b> 34,644 hand-labeled ball frames across 139 matches, ~19,500 frames of
+              event labels, 7+ venues in summer and winter light, and 85+ written experiment
+              reports behind the shipped choices.
+            </li>
+            <li>
+              <b>The open gaps are written down too:</b> automatic rally segmentation is the real
+              remaining gap, and a degraded input stage can look like a perfectly normal match —
+              which is why every run now emits a certificate that refuses to ship events when a
+              stage is broken.
+            </li>
+          </ul>
+        </div>
+      </section>
+
+      <section>
+        <div class="section-head"><span>06</span></div>
+        <h2>How it was built</h2>
+        <p class="prose">
+          The entire program — camera firmware to cloud pipeline to product — is built by one
+          engineer running <strong>fleets of AI coding agents</strong>: research, implementation,
+          and adversarial review in parallel, with hard verification gates before anything
+          merges. Training jobs stream checkpoints to durable storage so every epoch is
+          testable mid-run; model claims are attacked by independent review agents before
+          they're believed. It's a working demonstration of what one person ships when the
+          workflow is engineered as carefully as the product.
+        </p>
+      </section>
+
+      <div class="demo-banner">
+        <h2>See what the models see</h2>
+        <p>
+          The live demo is a real analyzed match — scrub the shot-by-shot transcript, filter by
+          player or shot type, and jump the dual-view video to any moment.
+        </p>
+        <a class="cta" href="https://www.paddlescreens.com/demo" target="_blank" rel="noreferrer">
+          Open the live demo ↗
+        </a>
+      </div>
+    </main>
+
+    <footer>
+      <div class="wrap">
+        <a href="/#work-paddlescreens">← Back to the portfolio</a>
+        <nav>
+          <a href="mailto:montabano1@gmail.com">Email</a>
+          <a href="https://github.com/montabano1" target="_blank" rel="noreferrer">GitHub</a>
+          <a
+            href="https://www.linkedin.com/in/michael-montalbano-47832114/"
+            target="_blank"
+            rel="noreferrer"
+            >LinkedIn</a
+          >
+        </nav>
+      </div>
+    </footer>
+  </body>
+</html>

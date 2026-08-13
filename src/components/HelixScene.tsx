@@ -50,7 +50,7 @@ const HELIX_POINTS = 34
 const HELIX_RADIUS = 1.35
 const HELIX_STEP = 0.34
 const HELIX_TWIST = 0.56
-const markerIndices = [5, 7, 9, 11, 13, 15, 18, 20, 22, 24, 26, 28]
+const markerIndices = [4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30]
 
 const HelixStructure = memo(function HelixStructure() {
   const geometry = useMemo(() => {
@@ -138,7 +138,12 @@ const ConnectionSockets = memo(function ConnectionSockets({ sequences }: { seque
 
 function orderSequences(sequences: Sequence[]) {
   const categoryOrder = ['experience', 'work', 'craft', 'contact']
-  return [0, 1, 2].flatMap((round) =>
+  const rounds = Math.max(
+    ...categoryOrder.map(
+      (categoryId) => sequences.filter((item) => item.categoryId === categoryId).length,
+    ),
+  )
+  return Array.from({ length: rounds }, (_, round) => round).flatMap((round) =>
     categoryOrder.flatMap((categoryId) => {
       const sequence = sequences.filter((item) => item.categoryId === categoryId)[round]
       return sequence ? [sequence] : []
@@ -456,8 +461,8 @@ function MolecularHelix({
     <>
       <group
         ref={group}
-        position={compactRendering ? [-1.05, -3.15, -1] : [-4.15, 0, 0]}
-        scale={compactRendering ? 0.5 : 1}
+        position={compactRendering ? [0, -1.0, -1.4] : [-4.15, 0, 0]}
+        scale={compactRendering ? 0.58 : 1}
         rotation={[0.08, -0.5, -0.1]}
       >
         <HelixStructure />

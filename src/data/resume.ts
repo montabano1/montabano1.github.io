@@ -24,6 +24,14 @@ export type Sequence = {
     label: string
     href: string
   }
+  secondaryAction?: {
+    label: string
+    href: string
+  }
+  stats?: {
+    value: string
+    label: string
+  }[]
 }
 
 export const categories: Category[] = [
@@ -83,10 +91,53 @@ export const sequences: Sequence[] = [
     title: 'PaddleScreens',
     color: category('work').color,
     glow: category('work').glow,
-    intro: 'Computer vision analytics for platform tennis',
+    intro: 'Court cameras, vision models, and line calls — end to end',
     detail:
-      'A full-stack web and mobile system combining ball tracking, pose estimation, court segmentation, and QR-activated industrial cameras for match analytics, replays, and close line calls.',
-    tags: ['Computer vision', 'Python', 'Swift'],
+      'Industrial cameras bolted to real platform-tennis courts feed a pipeline I built end to end: on-camera detection, dual-view sync and calibration, ball tracking, pose estimation, court segmentation, shot classification, and 3D flight solving. Members scan a QR code, play, and the match is recorded, analyzed, and ready before they leave the club.',
+    tags: ['Computer vision', 'Edge deployment', 'Full stack'],
+    stats: [
+      { value: '2', label: 'Cameras per court' },
+      { value: '250+', label: 'Sessions recorded' },
+      { value: '500+', label: 'Match videos' },
+    ],
+    action: {
+      label: 'Read the case study',
+      href: '/paddlescreens/',
+    },
+    secondaryAction: {
+      label: 'Try the live demo',
+      href: 'https://www.paddlescreens.com/demo',
+    },
+  },
+  {
+    id: 'work-catetus',
+    categoryId: 'work',
+    code: 'WRK–04',
+    label: 'Selected work',
+    title: 'Catetus',
+    color: category('work').color,
+    glow: category('work').glow,
+    intro: 'Production infrastructure for Gaussian Splats',
+    detail:
+      'A Rust toolchain that compresses, validates, and ships 3D Gaussian Splat assets — standards-aligned KHR glTF and SPZ output, deterministic visual-diff quality gates, and SplatBench, an open 28-scene benchmark with a public leaderboard.',
+    tags: ['Rust', '3D graphics', 'Compression'],
+    action: {
+      label: 'Visit catetus.com',
+      href: 'https://catetus.com',
+    },
+  },
+  {
+    id: 'work-stockbot',
+    categoryId: 'work',
+    code: 'WRK–05',
+    label: 'Selected work',
+    title: 'Autonomous trading lab',
+    color: category('work').color,
+    glow: category('work').glow,
+    intro: 'An AI analyst wrapped in deterministic risk controls',
+    detail:
+      'A 24/7 paper-trading system: deterministic Python ingests SEC EDGAR and market data and screens candidates, an LLM session wakes to produce forecasts and typed trade proposals, and a deterministic risk engine — never the model — validates, sizes, and submits each order. Every decision is journaled and scored against a shadow twin.',
+    tags: ['Python', 'LLM orchestration', 'Risk engineering'],
   },
   {
     id: 'work-tutorius',
@@ -127,13 +178,13 @@ export const sequences: Sequence[] = [
     categoryId: 'craft',
     code: 'CAP–01',
     label: 'Capabilities',
-    title: 'Applied intelligence',
+    title: 'AI-augmented throughput',
     color: category('craft').color,
     glow: category('craft').glow,
-    intro: 'AI and ML that solve specific human problems',
+    intro: 'One engineer, running like a team',
     detail:
-      'From fine-tuned tutoring and recruiting assistants to ball tracking, pose estimation, and court segmentation models.',
-    tags: ['Machine learning', 'Computer vision', 'AI products'],
+      'I orchestrate fleets of coding agents — research, implementation, and adversarial review running in parallel, with hard verification gates before anything ships. The PaddleScreens model program, the trading lab, and this site were all built that way.',
+    tags: ['Claude Code', 'Agent orchestration', 'Verification'],
   },
   {
     id: 'craft-cross-platform',
