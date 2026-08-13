@@ -3,7 +3,7 @@ export type SequenceId = string
 
 export type Category = {
   id: CategoryId
-  code: string
+  noun: string
   label: string
   color: string
   glow: string
@@ -12,7 +12,6 @@ export type Category = {
 export type Sequence = {
   id: SequenceId
   categoryId: CategoryId
-  code: string
   label: string
   title: string
   color: string
@@ -35,10 +34,10 @@ export type Sequence = {
 }
 
 export const categories: Category[] = [
-  { id: 'experience', code: 'C–01', label: 'Experience', color: '#62e6d2', glow: '#24bca8' },
-  { id: 'work', code: 'C–02', label: 'Selected work', color: '#ffb15c', glow: '#ef7e27' },
-  { id: 'craft', code: 'C–03', label: 'Capabilities', color: '#ff6474', glow: '#df3153' },
-  { id: 'contact', code: 'C–04', label: 'Contact', color: '#a7d957', glow: '#6f9e30' },
+  { id: 'experience', noun: 'chapters', label: 'Experience', color: '#62e6d2', glow: '#24bca8' },
+  { id: 'work', noun: 'builds', label: 'Selected work', color: '#ffb15c', glow: '#ef7e27' },
+  { id: 'craft', noun: 'superpowers', label: 'Capabilities', color: '#ff6474', glow: '#df3153' },
+  { id: 'contact', noun: 'ways in', label: 'Contact', color: '#a7d957', glow: '#6f9e30' },
 ]
 
 const category = (id: CategoryId) => categories.find((item) => item.id === id)!
@@ -47,7 +46,6 @@ export const sequences: Sequence[] = [
   {
     id: 'experience-capital-one',
     categoryId: 'experience',
-    code: 'EXP–01',
     label: 'Experience',
     title: 'Leading account opening',
     color: category('experience').color,
@@ -60,7 +58,6 @@ export const sequences: Sequence[] = [
   {
     id: 'experience-meta',
     categoryId: 'experience',
-    code: 'EXP–02',
     label: 'Experience',
     title: 'Shipping the future',
     color: category('experience').color,
@@ -73,7 +70,6 @@ export const sequences: Sequence[] = [
   {
     id: 'experience-earthcam',
     categoryId: 'experience',
-    code: 'EXP–03',
     label: 'Experience',
     title: 'Reliability in production',
     color: category('experience').color,
@@ -86,7 +82,6 @@ export const sequences: Sequence[] = [
   {
     id: 'work-paddlescreens',
     categoryId: 'work',
-    code: 'WRK–01',
     label: 'Selected work',
     title: 'PaddleScreens',
     color: category('work').color,
@@ -112,7 +107,6 @@ export const sequences: Sequence[] = [
   {
     id: 'work-catetus',
     categoryId: 'work',
-    code: 'WRK–04',
     label: 'Selected work',
     title: 'Catetus',
     color: category('work').color,
@@ -129,7 +123,6 @@ export const sequences: Sequence[] = [
   {
     id: 'work-stockbot',
     categoryId: 'work',
-    code: 'WRK–05',
     label: 'Selected work',
     title: 'Autonomous trading lab',
     color: category('work').color,
@@ -142,7 +135,6 @@ export const sequences: Sequence[] = [
   {
     id: 'work-tutorius',
     categoryId: 'work',
-    code: 'WRK–02',
     label: 'Selected work',
     title: 'Tutorius Math',
     color: category('work').color,
@@ -159,7 +151,6 @@ export const sequences: Sequence[] = [
   {
     id: 'work-recruitplan',
     categoryId: 'work',
-    code: 'WRK–03',
     label: 'Selected work',
     title: 'RecruitPlan',
     color: category('work').color,
@@ -176,7 +167,6 @@ export const sequences: Sequence[] = [
   {
     id: 'craft-ai',
     categoryId: 'craft',
-    code: 'CAP–01',
     label: 'Capabilities',
     title: 'AI-augmented throughput',
     color: category('craft').color,
@@ -189,7 +179,6 @@ export const sequences: Sequence[] = [
   {
     id: 'craft-cross-platform',
     categoryId: 'craft',
-    code: 'CAP–02',
     label: 'Capabilities',
     title: 'Across every layer',
     color: category('craft').color,
@@ -202,7 +191,6 @@ export const sequences: Sequence[] = [
   {
     id: 'craft-teaching',
     categoryId: 'craft',
-    code: 'CAP–03',
     label: 'Capabilities',
     title: 'Math meets mentorship',
     color: category('craft').color,
@@ -215,7 +203,6 @@ export const sequences: Sequence[] = [
   {
     id: 'contact-resume',
     categoryId: 'contact',
-    code: 'SIG–01',
     label: 'Contact',
     title: 'The full picture',
     color: category('contact').color,
@@ -232,7 +219,6 @@ export const sequences: Sequence[] = [
   {
     id: 'contact-collaborate',
     categoryId: 'contact',
-    code: 'SIG–02',
     label: 'Contact',
     title: 'Build together',
     color: category('contact').color,
@@ -245,7 +231,6 @@ export const sequences: Sequence[] = [
   {
     id: 'contact-signal',
     categoryId: 'contact',
-    code: 'SIG–03',
     label: 'Contact',
     title: 'Send a signal',
     color: category('contact').color,

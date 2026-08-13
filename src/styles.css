@@ -672,9 +672,9 @@ a:focus-visible {
   grid-column: 2;
   display: block;
   color: color-mix(in srgb, var(--sequence-color) 70%, #a7b1ad);
-  font-size: 7px;
+  font-size: 8px;
   font-weight: 700;
-  letter-spacing: 0.12em;
+  letter-spacing: 0.1em;
 }
 
 .sequence-nav button strong {
@@ -783,11 +783,7 @@ a:focus-visible {
   min-height: 0;
   max-height: none;
   padding: 22px clamp(26px, 3vw, 46px) 18px;
-  overflow-x: hidden;
-  overflow-y: auto;
-  overscroll-behavior: contain;
-  scrollbar-color: color-mix(in srgb, var(--sequence-color) 32%, transparent) transparent;
-  scrollbar-width: thin;
+  overflow: hidden;
   border: 0;
   border-radius: 28px;
   background: transparent;
@@ -808,10 +804,102 @@ a:focus-visible {
 .panel-header {
   flex: 0 0 auto;
   display: flex;
-  align-items: flex-start;
+  flex-wrap: wrap;
+  align-items: center;
   justify-content: space-between;
-  padding-bottom: 4px;
-  border-bottom: 0;
+  gap: 10px 16px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid color-mix(in srgb, var(--sequence-color) 16%, transparent);
+}
+
+.panel-code i {
+  display: inline-block;
+  width: 7px;
+  height: 7px;
+  margin-right: 9px;
+  border-radius: 50%;
+  background: var(--sequence-color);
+  box-shadow: 0 0 10px color-mix(in srgb, var(--sequence-color) 70%, transparent);
+}
+
+.panel-pager {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.panel-pager button {
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border: 1px solid color-mix(in srgb, var(--sequence-color) 26%, transparent);
+  border-radius: 50%;
+  color: #cdd8d4;
+  font-size: 13px;
+  background: color-mix(in srgb, var(--sequence-color) 7%, transparent);
+  cursor: pointer;
+  transition: color 180ms ease, background 180ms ease, transform 200ms var(--ease-out);
+}
+
+.panel-pager button:hover {
+  color: #ffffff;
+  background: color-mix(in srgb, var(--sequence-color) 18%, transparent);
+  transform: scale(1.08);
+}
+
+.panel-pager button:disabled {
+  opacity: 0.35;
+  cursor: wait;
+}
+
+.panel-dots {
+  display: inline-flex;
+  gap: 6px;
+}
+
+.panel-dots i {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--sequence-color) 24%, rgba(255, 255, 255, 0.12));
+  transition: background 220ms ease, transform 220ms var(--ease-out);
+}
+
+.panel-dots i.is-current {
+  background: var(--sequence-color);
+  box-shadow: 0 0 9px color-mix(in srgb, var(--sequence-color) 70%, transparent);
+  transform: scale(1.35);
+}
+
+.panel-scroll {
+  position: relative;
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-x: hidden;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-color: color-mix(in srgb, var(--sequence-color) 45%, transparent) transparent;
+  scrollbar-width: thin;
+  padding-right: 10px;
+}
+
+.panel-fade {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  height: 44px;
+  border-radius: 0 0 28px 28px;
+  background: linear-gradient(transparent, rgba(4, 7, 11, 0.55));
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 260ms ease;
+}
+
+.panel-fade.is-visible {
+  opacity: 1;
 }
 
 .panel-code,
@@ -954,73 +1042,6 @@ a:focus-visible {
   letter-spacing: 0.08em;
   text-transform: uppercase;
   background: color-mix(in srgb, var(--sequence-color) 8%, transparent);
-}
-
-.panel-navigation {
-  display: grid;
-  grid-template-columns: 1fr auto 1fr;
-  align-items: center;
-  gap: 10px;
-  margin-top: 20px;
-  padding: 7px;
-  border: 1px solid color-mix(in srgb, var(--sequence-color) 18%, transparent);
-  border-radius: 16px;
-  background: rgba(3, 8, 12, 0.3);
-}
-
-.panel-navigation button {
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-  width: max-content;
-  min-height: 38px;
-  padding: 8px 12px;
-  border: 0;
-  color: #b8c4c0;
-  font-family: 'Manrope', sans-serif;
-  font-size: 7px;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  border-radius: 11px;
-  background: color-mix(in srgb, var(--sequence-color) 7%, transparent);
-  cursor: pointer;
-  transition: color 180ms ease, transform 240ms var(--ease-out);
-}
-
-.panel-navigation button:last-child {
-  justify-self: end;
-}
-
-.panel-navigation button:hover {
-  color: #ffffff;
-  background: color-mix(in srgb, var(--sequence-color) 16%, transparent);
-  transform: translateX(-3px);
-}
-
-.panel-navigation button:last-child:hover {
-  transform: translateX(3px);
-}
-
-.panel-navigation button:disabled {
-  opacity: 0.35;
-  cursor: wait;
-}
-
-.panel-position {
-  display: flex;
-  align-items: baseline;
-  gap: 7px;
-  color: var(--sequence-color);
-  font-family: 'Manrope', sans-serif;
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 0.12em;
-}
-
-.panel-position i {
-  color: #43534f;
-  font-size: 7px;
-  font-style: normal;
 }
 
 .placeholder-note {
@@ -1382,12 +1403,14 @@ a:focus-visible {
     padding: 25px 0;
   }
 
-  .panel-navigation {
-    margin-top: 22px;
+  .panel-pager {
+    order: 3;
+    width: 100%;
+    justify-content: center;
   }
 
   .panel-content h2 {
-    font-size: clamp(44px, 14vw, 64px);
+    font-size: clamp(36px, 11vw, 56px);
   }
 
   .panel-intro {

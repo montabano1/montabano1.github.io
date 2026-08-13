@@ -1,6 +1,6 @@
 import { motion } from 'motion/react'
 import type { CSSProperties } from 'react'
-import type { Category, CategoryId } from '../data/resume'
+import { sequences, type Category, type CategoryId } from '../data/resume'
 
 type InterfaceProps = {
   categories: Category[]
@@ -67,11 +67,14 @@ export function Interface({
       </motion.main>
 
       <nav className="sequence-nav" aria-label="Explore résumé sequences">
-        <p className="nav-label">Explore my building blocks</p>
+        <p className="nav-label">Take a spin through what I’m made of</p>
         <ol>
           {categories.map((category) => {
             const active = selectedCategory === category.id
             const highlighted = hoveredCategory === category.id
+            const count = sequences.filter(
+              (sequence) => sequence.categoryId === category.id,
+            ).length
             return (
               <li key={category.id}>
                 <button
@@ -82,7 +85,9 @@ export function Interface({
                   aria-pressed={active}
                 >
                   <i aria-hidden="true" />
-                  <span>{category.code}</span>
+                  <span>
+                    {count} {category.noun}
+                  </span>
                   <strong>{category.label}</strong>
                   <b aria-hidden="true">↗</b>
                 </button>
