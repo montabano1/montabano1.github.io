@@ -577,10 +577,10 @@
             <div>
               <h3>Perception <small>TensorRT · 1.4× realtime</small></h3>
               <p>
-                Ball tracking every frame, pose at 15&nbsp;Hz, court keypoints at 1&nbsp;Hz, plus
-                paddle detection — over both views concurrently at 84&nbsp;fps per view on a
-                single RTX&nbsp;4090. The overlay video above is this stage drawn onto real match
-                footage.
+                Ball tracking every frame, pose at 15&nbsp;Hz, court keypoints at 1&nbsp;Hz —
+                over both views concurrently at 84&nbsp;fps per view on a single RTX&nbsp;4090
+                (51&nbsp;fps per view with the paddle worker running). The overlay video above is
+                this stage drawn onto real match footage.
               </p>
             </div>
           </div>
@@ -674,8 +674,9 @@
         <div class="section-head"><span>04</span></div>
         <h2>The models</h2>
         <p class="prose">
-          Roughly <strong>twenty trained models across eight families</strong>, every one trained
-          and evaluated on footage from the real installed cameras — not public datasets. The
+          Roughly <strong>twenty trained models across eight families</strong>, every one
+          evaluated — and nearly all trained — on footage from the real installed cameras, not
+          public datasets. The
           deployment ladder runs from batch processing on a home RTX&nbsp;4090, to realtime
           streaming on AWS T4s, to a Jetson Orin Nano at the court, down to a 180&nbsp;KB int8
           model inside the camera itself.
@@ -722,9 +723,9 @@
           <div class="model-card">
             <h3>Identity tracking</h3>
             <p>
-              Four fixed player identities held across both views in court coordinates — a full
-              match tracked with zero identity switches and both changeovers detected, at
-              0.31&nbsp;ms per sample.
+              Four fixed player identities held across both views in court coordinates — a
+              seven-minute match segment tracked with zero identity switches and both changeovers
+              detected, at 0.31&nbsp;ms per sample.
             </p>
           </div>
           <div class="model-card">
@@ -737,8 +738,8 @@
           <div class="model-card">
             <h3>Edge models</h3>
             <p>
-              Distilled int8 detectors — down to an 8&nbsp;KB ball net — exported for the
-              camera's own DLPU and the Jetson at the court.
+              Distilled edge exports — down to a 40&nbsp;KB ball net — for the Jetson at the
+              court and the camera's own DLPU, where a 180&nbsp;KB int8 model already runs.
             </p>
           </div>
         </div>
@@ -756,9 +757,8 @@
             <li>
               <b>The most defensible headline: .785 F1</b> for whole-video event detection on a
               held-out match, scored with no silencing whatsoever. The most interesting document
-              in the repo is the self-audit that <b>lowered</b> the previously published number
-              by six points after finding the metric had been quietly forgiven 39% of the
-              footage.
+              in the repo is the self-audit that <b>lowered</b> its own previously published
+              headline after finding the metric had been quietly forgiven 39% of the footage.
             </li>
             <li>
               <b>Geometry beat the model.</b> Moving event detection from single-view 2D to
@@ -768,12 +768,12 @@
             <li>
               <b>Every metric gets tested on a known-wrong change.</b> That rule exists because a
               pixel-perfect 1.19&nbsp;px court fit once placed the camera 12.7&nbsp;ft
-              <i>below</i> the deck — and every downstream number still read healthy.
+              <i>below</i> the deck — while the reprojection metrics all still read healthy.
             </li>
             <li>
-              <b>Scale:</b> 34,644 hand-labeled ball frames across 139 matches, ~19,500 frames of
-              event labels, 7+ venues in summer and winter light, and 85+ written experiment
-              reports behind the shipped choices.
+              <b>Scale:</b> 34,644 hand-labeled ball frames across 139 matches, ~2,700
+              hand-corrected event labels across 13 clips, 7+ venues in summer and winter light,
+              and 85+ written experiment reports behind the shipped choices.
             </li>
             <li>
               <b>The open gaps are written down too:</b> automatic rally segmentation is the real

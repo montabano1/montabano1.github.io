@@ -46,3 +46,25 @@ test('keeps contact reachable without interacting with WebGL', async ({ page }) 
     'mailto:montabano1@gmail.com',
   )
 })
+
+test('serves the PaddleScreens case study', async ({ page }) => {
+  await page.goto('/paddlescreens/index.html')
+  await expect(page.getByRole('heading', { name: /Cameras on the court/i })).toBeVisible()
+  await expect(page.getByRole('link', { name: /Open the live demo/i })).toHaveAttribute(
+    'href',
+    'https://www.paddlescreens.com/demo',
+  )
+})
+
+test('deep link opens the PaddleScreens panel with case-study links', async ({ page }) => {
+  await page.goto('/#work-paddlescreens')
+  await expect(page.getByRole('heading', { name: 'PaddleScreens' })).toBeVisible()
+  await expect(page.getByRole('link', { name: /Read the case study/i })).toHaveAttribute(
+    'href',
+    '/paddlescreens/',
+  )
+  await expect(page.getByRole('link', { name: /Try the live demo/i })).toHaveAttribute(
+    'href',
+    'https://www.paddlescreens.com/demo',
+  )
+})
