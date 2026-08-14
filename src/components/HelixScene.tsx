@@ -278,6 +278,7 @@ function MeshConnector({
   const targetQuaternion = useMemo(() => new Quaternion(), [])
   const scratchTarget = useMemo(() => new Vector3(), [])
   const viewportTarget = useMemo(() => new Vector3(), [])
+  const parentScale = useMemo(() => new Vector3(1, 1, 1), [])
   const baseColor = useMemo(() => new Color(sequence.color), [sequence.color])
   const highlightColor = useMemo(
     () => baseColor.clone().lerp(new Color('#ffffff'), 0.3),
@@ -290,9 +291,9 @@ function MeshConnector({
     const parent = outerRef.current.parent
     const compact = size.width < 760
     const currentViewport = viewport.getCurrentViewport(camera, viewportTarget.set(0, 0, 0))
-    const targetPixelWidth = compact ? size.width * 0.92 : Math.min(size.width * 0.42, 640)
+    const targetPixelWidth = compact ? size.width * 0.94 : Math.min(size.width * 0.42, 640)
     const targetWidth = currentViewport.width * (targetPixelWidth / size.width)
-    const targetHeight = currentViewport.height * (compact ? 0.84 : 0.6)
+    const targetHeight = currentViewport.height * (compact ? 0.88 : 0.6)
     const targetCenterX = compact
       ? size.width * 0.5
       : size.width * 0.95 - targetPixelWidth * 0.5
@@ -323,8 +324,12 @@ function MeshConnector({
       selected ? targetQuaternion.identity() : transform.quaternion,
       reducedMotion ? 1 : 1 - Math.exp(-delta * 7),
     )
-    const scaleX = selected ? targetWidth / transform.length : 1
-    const scaleY = selected ? targetHeight / 0.18 : 1
+    // The panel target is measured in world units, but this connector lives
+    // inside a group that is scaled down on compact viewports — divide the
+    // parent's world scale back out or the expanded box undershoots the panel.
+    if (parent) parent.getWorldScale(parentScale)
+    const scaleX = selected ? targetWidth / (transform.length * parentScale.x) : 1
+    const scaleY = selected ? targetHeight / (0.18 * parentScale.y) : 1
     connectorRef.current.scale.x = MathUtils.damp(connectorRef.current.scale.x, scaleX, damping, delta)
     connectorRef.current.scale.y = MathUtils.damp(connectorRef.current.scale.y, scaleY, damping, delta)
     connectorRef.current.scale.z = MathUtils.damp(connectorRef.current.scale.z, selected ? 1.8 : 1, damping, delta)
@@ -422,10 +427,10 @@ function MolecularHelix({
     group.current.updateWorldMatrix(true, false)
 
     const compact = size.width < 760
-    const panelWidth = compact ? size.width * 0.92 : Math.min(size.width * 0.42, 640)
-    const panelHeight = compact ? size.height * 0.84 : size.height * 0.6
-    const panelLeft = compact ? size.width * 0.04 : size.width - size.width * 0.05 - panelWidth
-    const panelTop = compact ? size.height * 0.08 : size.height * 0.2
+    const panelWidth = compact ? size.width * 0.94 : Math.min(size.width * 0.42, 640)
+    const panelHeight = compact ? size.height * 0.88 : size.height * 0.6
+    const panelLeft = compact ? size.width * 0.03 : size.width - size.width * 0.05 - panelWidth
+    const panelTop = compact ? size.height * 0.05 : size.height * 0.2
 
     layouts.forEach(({ sequence, start, end }) => {
       const element = rows.current[sequence.id]
@@ -461,9 +466,13 @@ function MolecularHelix({
     <>
       <group
         ref={group}
-        position={compactRendering ? [0, -1.0, -1.4] : [-4.15, 0, 0]}
-        scale={compactRendering ? 0.58 : 1}
-        rotation={[0.08, -0.5, -0.1]}
+        position={
+          compactRendering
+            ? [-0.08, size.height < 720 ? -1.2 : -1.0, -1.4]
+            : [-4.15, 0, 0]
+        }
+        scale={compactRendering ? (size.height < 720 ? 0.5 : 0.58) : 1}
+        rotation={compactRendering ? [0.04, -0.5, 0] : [0.08, -0.5, -0.1]}
       >
         <HelixStructure />
         <ConnectionSockets sequences={sequences} />

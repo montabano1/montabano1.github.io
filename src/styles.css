@@ -1309,11 +1309,21 @@ a:focus-visible {
   }
 
   .helix-placeholder {
-    top: 34%;
+    top: 28%;
     left: 50%;
     width: min(44vw, 190px);
-    height: 56%;
+    height: 60%;
     transform: translateX(-50%);
+  }
+
+  /* Depth scrims: fade the helix under the hero text and the nav cards so it
+     reads as threading behind the content layers instead of colliding with
+     them. Repurposes the otherwise-invisible grid layer — mobile only. */
+  .atmosphere-grid {
+    opacity: 1;
+    background:
+      linear-gradient(180deg, rgba(10, 13, 21, 0.92) 0%, rgba(10, 13, 21, 0.55) 26%, transparent 46%),
+      linear-gradient(0deg, rgba(10, 13, 21, 0.88) 0%, rgba(10, 13, 21, 0.42) 12%, transparent 26%);
   }
 
   .hero-copy {
@@ -1379,10 +1389,10 @@ a:focus-visible {
   }
 
   .sequence-panel {
-    top: 8vh;
-    right: 4vw;
-    width: 92vw;
-    height: 84vh;
+    top: 5vh;
+    right: 3vw;
+    width: 94vw;
+    height: 88vh;
     min-height: 0;
     max-height: none;
     padding: 18px 20px 16px;

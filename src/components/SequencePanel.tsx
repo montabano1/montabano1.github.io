@@ -1,4 +1,4 @@
-import { AnimatePresence, motion } from 'motion/react'
+import { AnimatePresence, motion, type Variants } from 'motion/react'
 import { useCallback, useEffect, useRef, useState, type CSSProperties } from 'react'
 import type { CategoryId, Sequence } from '../data/resume'
 
@@ -19,7 +19,7 @@ const UNIT_BY_CATEGORY: Record<CategoryId, string> = {
   contact: 'Signal',
 }
 
-const panelMotion = {
+const panelMotion: Variants = {
   hidden: {
     opacity: 0,
     x: -28,
@@ -30,11 +30,14 @@ const panelMotion = {
     x: 0,
     clipPath: 'inset(0% 0% 0% 0 round 0px)',
   },
-  exit: {
+  // The connector starts flying home the instant a panel closes, so the
+  // content must vanish faster than the flight — any lag breaks the illusion
+  // that the text lived inside the connector.
+  exit: (reducedMotion: boolean) => ({
     opacity: 0,
-    x: -24,
-    clipPath: 'inset(0% 62% 92% 0 round 999px)',
-  },
+    scale: 0.985,
+    transition: { duration: reducedMotion ? 0 : 0.16, ease: 'easeOut' },
+  }),
 }
 
 export function SequencePanel({
@@ -95,7 +98,7 @@ export function SequencePanel({
   }, [sequence])
 
   return (
-    <AnimatePresence mode="wait">
+    <AnimatePresence mode="wait" custom={reducedMotion}>
       {sequence ? (
         <motion.aside
           ref={panelRef}
@@ -109,6 +112,7 @@ export function SequencePanel({
           initial="hidden"
           animate="visible"
           exit="exit"
+          custom={reducedMotion}
           variants={panelMotion}
           transition={{
             duration: reducedMotion ? 0 : 0.82,
