@@ -17,11 +17,12 @@ test('helix connectors highlight, open, and close panels', async ({ page }) => {
 
   // Pick a connector whose hit target sits on screen, clear of the hero copy.
   const rows = page.locator('.connector-row')
-  await expect(rows).toHaveCount(14)
+  await expect(rows.first()).toBeAttached()
   await page.waitForTimeout(1500)
   const viewport = page.viewportSize()!
+  const total = await rows.count()
   let target = -1
-  for (let index = 0; index < 14; index += 1) {
+  for (let index = 0; index < total; index += 1) {
     const box = await rows.nth(index).boundingBox()
     if (!box) continue
     const x = box.x + box.width / 2

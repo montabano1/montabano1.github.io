@@ -93,14 +93,14 @@ export const sequences: Sequence[] = [
     color: category('work').color,
     glow: category('work').glow,
     figure: 'court',
-    intro: 'Court cameras, vision models, and line calls — end to end',
+    intro: 'Court cameras, vision models, and line calls — running at real clubs',
     detail:
-      'Industrial cameras bolted to real platform-tennis courts feed a pipeline I built end to end: on-camera detection, dual-view sync and calibration, ball tracking, pose estimation, court segmentation, shot classification, and 3D flight solving. Members scan a QR code, play, and the match is recorded, analyzed, and ready before they leave the club.',
-    tags: ['Computer vision', 'Edge deployment', 'Full stack'],
+      'Pairs of industrial cameras on platform-tennis courts at eight clubs, each running a recorder I wrote in C that lives on the camera itself. Behind them: dual-view sync and calibration, ball tracking, pose, court segmentation, shot classification, and 3D flight solving. Members scan a QR code, play, and the match is recorded, analyzed, and ready before they leave the club.',
+    tags: ['Computer vision', 'Edge deployment', 'Operations'],
     stats: [
+      { value: '8', label: 'Clubs' },
+      { value: '900+', label: 'Match videos' },
       { value: '2', label: 'Cameras per court' },
-      { value: '250+', label: 'Sessions recorded' },
-      { value: '500+', label: 'Match videos' },
     ],
     action: {
       label: 'Read the case study',
@@ -112,50 +112,29 @@ export const sequences: Sequence[] = [
     },
   },
   {
-    id: 'work-catetus',
+    id: 'work-beleeg',
     categoryId: 'work',
     label: 'Selected work',
-    title: 'Catetus',
+    title: 'Beleeg',
     color: category('work').color,
     glow: category('work').glow,
-    figure: 'splats',
-    intro: 'Production infrastructure for Gaussian Splats',
+    figure: 'bracket',
+    intro: 'League software with an AI copilot that asks before it acts',
     detail:
-      'A Rust toolchain that compresses, validates, and ships 3D Gaussian Splat assets — standards-aligned KHR glTF and SPZ output, deterministic visual-diff quality gates, and SplatBench, an open 28-scene benchmark with a public leaderboard.',
-    tags: ['Rust', '3D graphics', 'Compression'],
+      'Everything an amateur sports league runs on — schedules, scoring, standings, brackets, payments, and messaging — on web and mobile. Its copilot, lebrAIn, can take 43 real actions, but every write is prepared, previewed, and applied only after a person confirms. The same action registry is exposed as an MCP server, so outside assistants run a league under the same rules.',
+    tags: ['AI agents', 'MCP', 'Multi-tenant Postgres'],
+    stats: [
+      { value: '43', label: 'Confirm-gated AI actions' },
+      { value: '400+', label: 'Playwright tests' },
+      { value: '832', label: 'Commits in four months' },
+    ],
     action: {
-      label: 'Visit catetus.com',
-      href: 'https://catetus.com',
+      label: 'Read the case study',
+      href: '/beleeg/',
     },
-  },
-  {
-    id: 'work-stockbot',
-    categoryId: 'work',
-    label: 'Selected work',
-    title: 'Autonomous trading lab',
-    color: category('work').color,
-    glow: category('work').glow,
-    figure: 'ticker',
-    intro: 'An AI analyst wrapped in deterministic risk controls',
-    detail:
-      'A 24/7 paper-trading system: deterministic Python ingests SEC EDGAR and market data and screens candidates, an LLM session wakes to produce forecasts and typed trade proposals, and a deterministic risk engine — never the model — validates, sizes, and submits each order. Every decision is journaled and scored against a shadow twin.',
-    tags: ['Python', 'LLM orchestration', 'Risk engineering'],
-  },
-  {
-    id: 'work-tutorius',
-    categoryId: 'work',
-    label: 'Selected work',
-    title: 'Tutorius Math',
-    color: category('work').color,
-    glow: category('work').glow,
-    figure: 'equation',
-    intro: 'Premium tutoring made accessible at scale',
-    detail:
-      'A full-stack iOS learning app with 10,000+ first-year downloads, an AI tutor, personalized CoreData and Firestore feedback, and custom inline LaTeX rendering.',
-    tags: ['iOS', 'AI tutoring', 'Education'],
-    action: {
-      label: 'View on the App Store',
-      href: 'https://apps.apple.com/us/app/tutorius-math/id1544620273',
+    secondaryAction: {
+      label: 'Visit beleeg.com',
+      href: 'https://beleeg.com',
     },
   },
   {
@@ -165,14 +144,40 @@ export const sequences: Sequence[] = [
     title: 'RecruitPlan',
     color: category('work').color,
     glow: category('work').glow,
-    figure: 'network',
-    intro: 'AI-powered guidance for athletic recruiting',
+    figure: 'calibration',
+    intro: 'College lacrosse recruiting, built on real commitment data',
     detail:
-      'An all-in-one recruiting platform shaped through interviews with coaches, parents, athletes, and administrators, with an AI assistant for next steps and admission probabilities.',
-    tags: ['Product research', 'AI chatbot', 'Full stack'],
+      'Co-built with RecruitPlan’s founder. I built the prediction model — a calibrated classifier trained on about 34,000 real commitments that places an athlete on a 12-tier D1-to-NAIA scale. It replaced a formula that claimed 99% confidence and was right 54–57% of the time; the new one says 62–72% and hits 64–75%. I also built the daily scrapers behind 588 college pages, and the billing.',
+    tags: ['Calibrated ML', 'Data pipelines', 'Full stack'],
+    stats: [
+      { value: '34k', label: 'Commitments modeled' },
+      { value: '588', label: 'College programs' },
+      { value: '62k', label: 'Roster players scraped' },
+    ],
     action: {
-      label: 'Visit RecruitPlan',
-      href: 'https://www.recruitplan.ai/',
+      label: 'Visit recruitplan.com',
+      href: 'https://www.recruitplan.com',
+    },
+  },
+  {
+    id: 'work-tutorius',
+    categoryId: 'work',
+    label: 'Selected work',
+    title: 'Tutorius Math',
+    color: category('work').color,
+    glow: category('work').glow,
+    figure: 'equation',
+    intro: 'SAT and ACT math prep on iOS',
+    detail:
+      'A UIKit app with 450+ practice questions across 15 units, an adaptive ranking that recommends the next topic from accuracy and coverage, custom inline LaTeX rendering, Firebase and CoreData persistence, and Stripe subscriptions through Cloud Functions.',
+    tags: ['iOS', 'Swift', 'Education'],
+    stats: [
+      { value: '4.8★', label: 'App Store rating' },
+      { value: '450+', label: 'Practice questions' },
+    ],
+    action: {
+      label: 'View on the App Store',
+      href: 'https://apps.apple.com/us/app/tutorius-math/id1544620273',
     },
   },
   {
@@ -185,7 +190,7 @@ export const sequences: Sequence[] = [
     figure: 'agents',
     intro: 'One engineer, running like a team',
     detail:
-      'I orchestrate fleets of coding agents — research, implementation, and adversarial review running in parallel, with hard verification gates before anything ships. The PaddleScreens model program, the trading lab, and this site were all built that way.',
+      'I orchestrate fleets of coding agents — research, implementation, and adversarial review running in parallel, with hard verification gates before anything ships. Beleeg — 832 commits in four months — the PaddleScreens model program, and this site were all built that way.',
     tags: ['Claude Code', 'Agent orchestration', 'Verification'],
   },
   {

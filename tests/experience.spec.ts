@@ -71,3 +71,17 @@ test('deep link opens the PaddleScreens panel with case-study links', async ({ p
   )
   await expect(page.getByRole('img', { name: /rally simulated in 3D/i })).toBeVisible()
 })
+
+test('serves the Beleeg case study and links it from its panel', async ({ page }) => {
+  await page.goto('/beleeg/index.html')
+  await expect(page.getByRole('heading', { name: /An AI that runs your league/i })).toBeVisible()
+  await expect(page.getByRole('img', { name: /action registry/i })).toBeVisible()
+
+  await page.goto('/#work-beleeg')
+  await expect(page.getByRole('heading', { level: 2, name: 'Beleeg' })).toBeVisible()
+  await expect(page.getByRole('link', { name: /Read the case study/i })).toHaveAttribute('href', '/beleeg/')
+  await expect(page.getByRole('link', { name: /Visit beleeg\.com/i })).toHaveAttribute(
+    'href',
+    'https://beleeg.com',
+  )
+})

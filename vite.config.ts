@@ -11,6 +11,7 @@ export default defineConfig({
       input: {
         main: 'index.html',
         paddlescreens: 'paddlescreens/index.html',
+        beleeg: 'beleeg/index.html',
       },
     },
   },

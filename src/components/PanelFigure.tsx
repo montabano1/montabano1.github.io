@@ -13,6 +13,8 @@ export type FigureKind =
   | 'document'
   | 'strands'
   | 'signal'
+  | 'bracket'
+  | 'calibration'
 
 type FigureProps = {
   kind: FigureKind
@@ -561,6 +563,101 @@ function SignalFigure() {
   )
 }
 
+/* -------------------------------------------------------------- bracket */
+
+const PROMPT = 'Seed the playoffs by standings'
+const SEEDS = ['1', '8', '4', '5', '3', '6', '2', '7']
+
+function BracketFigure({ reducedMotion }: { reducedMotion: boolean }) {
+  // One tick every 90 ms: type the request, wait for the confirm, then draw
+  // each round of the bracket, hold, and start over.
+  const typed = PROMPT.length
+  const confirmAt = typed + 6
+  const rounds = [confirmAt + 4, confirmAt + 10, confirmAt + 16, confirmAt + 22]
+  const cycle = rounds[3] + 30
+  const [tick, setTick] = useState(reducedMotion ? rounds[3] : 0)
+  useEffect(() => {
+    if (reducedMotion) return
+    const timer = window.setInterval(() => setTick((value) => (value + 1) % cycle), 90)
+    return () => window.clearInterval(timer)
+  }, [reducedMotion, cycle])
+
+  const x = [248, 318, 388, 458]
+  const leaf = (index: number) => 12 + index * 13.4
+  const ys: number[][] = [SEEDS.map((_, index) => leaf(index))]
+  for (let round = 1; round < 4; round += 1) {
+    ys.push(ys[round - 1].filter((_, index) => index % 2 === 0).map((y, index) => (y + ys[round - 1][index * 2 + 1]) / 2))
+  }
+
+  return (
+    <Frame label="The league copilot drafts a request, waits for a person to confirm it, and only then draws the playoff bracket">
+      <rect className="fig-chat" x="12" y="18" width="198" height="36" rx="12" />
+      <text className="fig-chat-text" x="24" y="40">
+        {PROMPT.slice(0, Math.min(tick, typed))}
+        {tick < typed ? <tspan className="fig-cursor">|</tspan> : null}
+      </text>
+      <g className={`fig-confirm ${tick >= typed ? 'is-asking' : ''} ${tick >= confirmAt ? 'is-confirmed' : ''}`}>
+        <rect x="12" y="66" width="198" height="30" rx="10" />
+        <text x="111" y="85" textAnchor="middle">
+          {tick >= confirmAt ? '✓ Confirmed — applying' : 'Confirm before anything changes?'}
+        </text>
+      </g>
+      {ys.slice(0, 3).map((column, round) =>
+        column.map((y, index) => {
+          if (index % 2) return null
+          const y2 = column[index + 1]
+          const mid = (y + y2) / 2
+          return (
+            <path
+              key={`${round}-${index}`}
+              className={`fig-bracket ${tick >= rounds[round + 1] ? 'is-drawn' : ''}`}
+              d={`M${x[round] + 26} ${y}H${x[round] + 44}V${y2}H${x[round] + 26}M${x[round] + 44} ${mid}H${x[round + 1]}`}
+              pathLength={1}
+            />
+          )
+        }),
+      )}
+      {ys.map((column, round) =>
+        column.map((y, index) => (
+          <g key={`${round}-${index}`} className={`fig-seed ${tick >= rounds[round] ? 'is-in' : ''}`}>
+            <rect x={x[round]} y={y - 5.5} width="26" height="11" rx="5.5" />
+            {round === 0 ? (
+              <text x={x[round] + 13} y={y + 3.4} textAnchor="middle">{SEEDS[index]}</text>
+            ) : null}
+          </g>
+        )),
+      )}
+    </Frame>
+  )
+}
+
+/* ---------------------------------------------------------- calibration */
+
+function CalibrationFigure() {
+  const px = (value: number) => 70 + ((value - 40) / 60) * 420
+  const py = (value: number) => 104 - ((value - 40) / 60) * 92
+  return (
+    <Frame label="Calibration plot: the old formula claimed 99% confidence but was right about 55% of the time; the new model's stated confidence matches its measured hit rate">
+      <path className="fig-axis" d={`M${px(40)} ${py(40)}H${px(100)}M${px(40)} ${py(40)}V${py(100)}`} />
+      <path className="fig-diag" d={`M${px(40)} ${py(40)}L${px(100)} ${py(100)}`} pathLength={1} />
+      <text className="fig-caption" x={px(100)} y="119" textAnchor="end">stated confidence →</text>
+      <text className="fig-caption" x={px(93)} y={py(97)} textAnchor="end">claims match reality</text>
+      <text className="fig-caption" x="12" y={py(97)}>hit rate</text>
+      <text className="fig-caption" x="12" y={py(88)}>(actual)</text>
+      <path className="fig-gap" d={`M${px(99)} ${py(55.5)}V${py(99)}`} pathLength={1} />
+      <circle className="fig-old" cx={px(99)} cy={py(55.5)} r="6" />
+      <text className="fig-caption fig-old-label" x={px(99) - 12} y={py(55.5) - 8} textAnchor="end">
+        old formula: says 99%, right 55%
+      </text>
+      <circle className="fig-new" cx={px(62)} cy={py(64)} r="6" />
+      <circle className="fig-new is-second" cx={px(72)} cy={py(75)} r="6" />
+      <text className="fig-caption fig-new-label" x={px(62) - 8} y={py(64) + 24}>
+        new model: says 62–72%, hits 64–75%
+      </text>
+    </Frame>
+  )
+}
+
 export function PanelFigure({ kind, sequenceId, reducedMotion }: FigureProps) {
   switch (kind) {
     case 'court':
@@ -587,5 +684,9 @@ export function PanelFigure({ kind, sequenceId, reducedMotion }: FigureProps) {
       return <StrandsFigure />
     case 'signal':
       return <SignalFigure />
+    case 'bracket':
+      return <BracketFigure reducedMotion={reducedMotion} />
+    case 'calibration':
+      return <CalibrationFigure />
   }
 }

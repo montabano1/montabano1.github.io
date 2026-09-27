@@ -21,7 +21,8 @@ const UNIT_BY_CATEGORY: Record<CategoryId, string> = {
 
 /** Counts a stat like "250+" up from zero once the panel has unfolded. */
 function CountUp({ value, reducedMotion }: { value: string; reducedMotion: boolean }) {
-  const match = value.match(/^(\d+)(.*)$/)
+  // Whole numbers with a non-numeric suffix ("250+", "34k") count up; "4.8★" renders as-is.
+  const match = value.match(/^(\d+)([^\d.]*)$/)
   const target = match ? Number(match[1]) : 0
   const [current, setCurrent] = useState(reducedMotion || !match ? target : 0)
   useEffect(() => {

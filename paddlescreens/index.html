@@ -40,664 +40,7 @@
       content="https://www.michaelmontalbano.com/media/paddlescreens-overlay-poster.jpg"
     />
 
-    <style>
-      @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght,SOFT,WONK@9..144,400..700,0..100,0..1&family=Manrope:wght@300;400;500;600;700&display=swap');
-
-      :root {
-        color-scheme: dark;
-        --ink: #f5f1e8;
-        --muted: #a2aeb9;
-        --dim: #77857f;
-        --accent: #ffb15c;
-        --accent-deep: #ef7e27;
-        --hairline: rgba(255, 247, 226, 0.13);
-        --card: rgba(15, 19, 30, 0.72);
-        --bg: #0a0d15;
-      }
-
-      * { box-sizing: border-box; }
-
-      html {
-        scroll-behavior: smooth;
-      }
-
-      body {
-        margin: 0;
-        color: var(--ink);
-        font-family: 'Manrope', sans-serif;
-        font-weight: 300;
-        background:
-          radial-gradient(circle at 85% 4%, rgba(255, 177, 92, 0.09), transparent 32%),
-          radial-gradient(circle at 4% 38%, rgba(98, 230, 210, 0.05), transparent 30%),
-          var(--bg);
-        text-rendering: optimizeLegibility;
-      }
-
-      a { color: inherit; }
-
-      .wrap {
-        width: min(1060px, calc(100% - 48px));
-        margin: 0 auto;
-      }
-
-      .top-bar {
-        position: sticky;
-        top: 0;
-        z-index: 20;
-        border-bottom: 1px solid var(--hairline);
-        background: rgba(8, 11, 18, 0.82);
-        backdrop-filter: blur(14px);
-      }
-
-      .top-bar .wrap {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: 18px;
-        padding: 14px 0;
-        font-size: 10px;
-        font-weight: 600;
-        letter-spacing: 0.11em;
-        text-transform: uppercase;
-      }
-
-      .top-bar a {
-        color: var(--muted);
-        text-decoration: none;
-        transition: color 180ms ease;
-      }
-
-      .top-bar a:hover { color: #fff; }
-
-      .top-bar .demo-link { color: var(--accent); }
-
-      .hero {
-        padding: clamp(56px, 9vh, 110px) 0 clamp(30px, 5vh, 56px);
-      }
-
-      .kicker {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        margin: 0 0 22px;
-        color: var(--accent);
-        font-size: 10px;
-        font-weight: 700;
-        letter-spacing: 0.14em;
-        text-transform: uppercase;
-      }
-
-      .kicker::before {
-        width: 24px;
-        height: 2px;
-        background: linear-gradient(90deg, var(--accent), var(--accent-deep));
-        content: '';
-      }
-
-      h1 {
-        margin: 0;
-        font-family: 'Fraunces', serif;
-        font-size: clamp(46px, 7vw, 92px);
-        font-weight: 400;
-        line-height: 0.95;
-        letter-spacing: -0.04em;
-        text-wrap: balance;
-      }
-
-      h1 em {
-        color: var(--accent);
-        font-style: normal;
-      }
-
-      .lede {
-        max-width: 640px;
-        margin: 26px 0 0;
-        color: var(--muted);
-        font-size: clamp(15px, 1.3vw, 18px);
-        line-height: 1.75;
-      }
-
-      .lede strong { color: var(--ink); font-weight: 600; }
-
-      .cta-row {
-        display: flex;
-        flex-wrap: wrap;
-        align-items: center;
-        gap: 14px 26px;
-        margin-top: 30px;
-      }
-
-      .cta {
-        display: inline-flex;
-        align-items: center;
-        gap: 11px;
-        padding: 13px 22px;
-        border: 1px solid rgba(255, 177, 92, 0.4);
-        border-radius: 15px;
-        color: #ffd9ae;
-        font-size: 11px;
-        font-weight: 700;
-        letter-spacing: 0.05em;
-        text-decoration: none;
-        text-transform: uppercase;
-        background: linear-gradient(120deg, rgba(255, 177, 92, 0.14), rgba(239, 126, 39, 0.07));
-        transition: border-color 200ms ease, transform 200ms ease;
-      }
-
-      .cta:hover {
-        border-color: rgba(255, 177, 92, 0.8);
-        transform: translateY(-2px);
-      }
-
-      .cta.ghost {
-        border-color: var(--hairline);
-        color: var(--muted);
-        background: none;
-      }
-
-      .video-frame {
-        position: relative;
-        margin: clamp(30px, 5vh, 54px) 0 12px;
-        overflow: hidden;
-        border: 1px solid var(--hairline);
-        border-radius: 22px;
-        background: #05070c;
-        box-shadow: 0 30px 80px rgba(0, 0, 0, 0.45);
-      }
-
-      .video-frame video {
-        display: block;
-        width: 100%;
-        height: auto;
-      }
-
-      .caption {
-        margin: 14px auto 0;
-        max-width: 760px;
-        color: var(--dim);
-        font-size: 12px;
-        line-height: 1.7;
-        text-align: center;
-      }
-
-      .caption b { color: var(--muted); font-weight: 600; }
-
-      section {
-        padding: clamp(40px, 7vh, 76px) 0 0;
-        scroll-margin-top: 56px;
-      }
-
-      .section-head {
-        display: flex;
-        align-items: baseline;
-        gap: 16px;
-        margin-bottom: 8px;
-      }
-
-      .section-head span {
-        color: var(--accent);
-        font-size: 10px;
-        font-weight: 700;
-        letter-spacing: 0.14em;
-        text-transform: uppercase;
-      }
-
-      h2 {
-        margin: 0 0 18px;
-        font-family: 'Fraunces', serif;
-        font-size: clamp(30px, 3.6vw, 46px);
-        font-weight: 400;
-        letter-spacing: -0.03em;
-      }
-
-      .prose {
-        max-width: 660px;
-        color: var(--muted);
-        font-size: 15px;
-        line-height: 1.85;
-      }
-
-      .prose strong { color: var(--ink); font-weight: 600; }
-
-      .stat-band {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-        gap: 14px;
-        margin-top: 34px;
-      }
-
-      .stat {
-        padding: 20px 22px;
-        border: 1px solid var(--hairline);
-        border-radius: 18px;
-        background: var(--card);
-      }
-
-      .stat b {
-        display: block;
-        font-family: 'Fraunces', serif;
-        font-size: clamp(28px, 3vw, 40px);
-        font-weight: 400;
-        color: var(--accent);
-      }
-
-      .stat span {
-        display: block;
-        margin-top: 7px;
-        color: var(--dim);
-        font-size: 9px;
-        font-weight: 600;
-        letter-spacing: 0.12em;
-        text-transform: uppercase;
-      }
-
-      .pipeline {
-        display: grid;
-        gap: 10px;
-        margin-top: 34px;
-      }
-
-      .pipe-stage {
-        position: relative;
-        display: grid;
-        grid-template-columns: 44px 1fr;
-        gap: 18px;
-        padding: 20px 22px;
-        border: 1px solid var(--hairline);
-        border-radius: 18px;
-        background: var(--card);
-      }
-
-      .pipe-stage:not(:last-child)::after {
-        position: absolute;
-        bottom: -14px;
-        left: 42px;
-        z-index: 1;
-        color: var(--accent-deep);
-        font-size: 13px;
-        content: '↓';
-      }
-
-      .pipe-num {
-        display: grid;
-        place-items: center;
-        width: 40px;
-        height: 40px;
-        border: 1px solid rgba(255, 177, 92, 0.35);
-        border-radius: 12px;
-        color: var(--accent);
-        font-family: 'Fraunces', serif;
-        font-size: 17px;
-        background: rgba(255, 177, 92, 0.07);
-      }
-
-      .pipe-stage h3 {
-        margin: 0 0 7px;
-        font-size: 15px;
-        font-weight: 600;
-        letter-spacing: 0.01em;
-      }
-
-      .pipe-stage h3 small {
-        margin-left: 10px;
-        color: var(--dim);
-        font-size: 9px;
-        font-weight: 600;
-        letter-spacing: 0.11em;
-        text-transform: uppercase;
-      }
-
-      .pipe-stage p {
-        margin: 0;
-        color: var(--muted);
-        font-size: 13px;
-        line-height: 1.75;
-      }
-
-      .linecall-grid {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 22px;
-        align-items: start;
-        margin-top: 30px;
-      }
-
-      .linecall-grid .video-frame { margin: 0; }
-
-      @media (max-width: 760px) {
-        .linecall-grid { grid-template-columns: 1fr; }
-      }
-
-      .model-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
-        gap: 12px;
-        margin-top: 30px;
-      }
-
-      .model-card {
-        padding: 18px 20px;
-        border: 1px solid var(--hairline);
-        border-radius: 16px;
-        background: var(--card);
-      }
-
-      .model-card h3 {
-        margin: 0 0 8px;
-        color: var(--accent);
-        font-size: 12px;
-        font-weight: 700;
-        letter-spacing: 0.06em;
-        text-transform: uppercase;
-      }
-
-      .model-card p {
-        margin: 0;
-        color: var(--muted);
-        font-size: 12.5px;
-        line-height: 1.7;
-      }
-
-      .honest {
-        margin-top: 30px;
-        padding: 26px 28px;
-        border: 1px solid rgba(255, 177, 92, 0.22);
-        border-radius: 20px;
-        background: rgba(255, 177, 92, 0.045);
-      }
-
-      .honest ul {
-        margin: 0;
-        padding-left: 18px;
-        color: var(--muted);
-        font-size: 14px;
-        line-height: 2;
-      }
-
-      .honest li::marker { color: var(--accent-deep); }
-
-      .honest b { color: var(--ink); font-weight: 600; }
-
-      .demo-banner {
-        margin-top: clamp(48px, 8vh, 84px);
-        padding: clamp(30px, 5vw, 52px);
-        border: 1px solid rgba(255, 177, 92, 0.25);
-        border-radius: 26px;
-        text-align: center;
-        background:
-          radial-gradient(circle at 50% 0%, rgba(255, 177, 92, 0.12), transparent 60%),
-          var(--card);
-      }
-
-      .demo-banner h2 { margin-bottom: 10px; }
-
-      .demo-banner p {
-        max-width: 520px;
-        margin: 0 auto 24px;
-        color: var(--muted);
-        font-size: 14px;
-        line-height: 1.75;
-      }
-
-      footer {
-        margin-top: clamp(48px, 8vh, 90px);
-        border-top: 1px solid var(--hairline);
-      }
-
-      footer .wrap {
-        display: flex;
-        flex-wrap: wrap;
-        align-items: center;
-        justify-content: space-between;
-        gap: 12px 24px;
-        padding: 26px 0 34px;
-        color: var(--dim);
-        font-size: 10px;
-        font-weight: 600;
-        letter-spacing: 0.1em;
-        text-transform: uppercase;
-      }
-
-      footer a {
-        color: var(--muted);
-        text-decoration: none;
-      }
-
-      footer a:hover { color: #fff; }
-
-      footer nav { display: flex; gap: 20px; }
-
-      @media (max-width: 640px) {
-        .wrap { width: calc(100% - 32px); }
-        .top-bar .wrap { font-size: 8.5px; gap: 10px; }
-        .pipe-stage { grid-template-columns: 34px 1fr; gap: 13px; padding: 16px; }
-        .pipe-num { width: 32px; height: 32px; font-size: 14px; border-radius: 9px; }
-        .pipe-stage:not(:last-child)::after { left: 30px; }
-      }
-
-      /* ---------- motion layer ---------- */
-
-      .progress {
-        position: absolute;
-        left: 0;
-        bottom: -1px;
-        height: 2px;
-        width: 100%;
-        background: linear-gradient(90deg, var(--accent-deep), var(--accent), #fff3c4);
-        box-shadow: 0 0 12px rgba(255, 177, 92, 0.7);
-        transform: scaleX(var(--progress, 0));
-        transform-origin: left;
-      }
-
-      .hero-grid {
-        display: grid;
-        grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr);
-        gap: clamp(20px, 4vw, 56px);
-        align-items: center;
-      }
-
-      .rally {
-        position: relative;
-        width: 100%;
-        aspect-ratio: 560 / 380;
-      }
-
-      .rally svg { width: 100%; height: 100%; overflow: visible; }
-
-      .rally .court { fill: rgba(255, 177, 92, 0.05); stroke: rgba(255, 177, 92, 0.6); stroke-width: 1.4; }
-      .rally .lines { fill: none; stroke: rgba(255, 177, 92, 0.3); stroke-width: 1; }
-      .rally .cage { fill: none; stroke: rgba(162, 174, 185, 0.18); stroke-width: 1; }
-      .rally .net { stroke: rgba(245, 241, 232, 0.6); stroke-width: 2; stroke-dasharray: 3 3; }
-      .rally .cone { animation: cone 3s ease-in-out infinite; }
-      .rally .cone.b { animation-delay: -1.5s; }
-      .rally .cam { fill: #0d111b; stroke: var(--accent); stroke-width: 1.4; }
-      .rally .cam-lens { fill: var(--accent); animation: rec 1.4s steps(2) infinite; }
-      .rally .shadow { fill: rgba(0, 0, 0, 0.6); }
-      .rally .ball { fill: #f6ffd8; filter: drop-shadow(0 0 7px #e7ff9a); }
-      .rally .trail { fill: none; stroke: #ff6474; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
-      .rally .mark { fill: none; stroke: #62e6d2; stroke-width: 1.3; }
-      .rally .player circle { fill: #0d111b; stroke-width: 2; }
-      .rally .player text { font: 700 9px 'Manrope', sans-serif; text-anchor: middle; letter-spacing: 0.04em; }
-      .rally .hud { font: 600 10px 'Manrope', sans-serif; fill: var(--dim); letter-spacing: 0.06em; }
-      .rally .hud tspan.v { fill: var(--accent); }
-
-      @keyframes cone { 50% { opacity: 0.4; } }
-      @keyframes rec { 50% { opacity: 0.25; } }
-
-      .stat b { font-variant-numeric: tabular-nums; }
-
-      .pipeline { position: relative; padding-left: 0; }
-
-      .rail {
-        position: absolute;
-        top: 30px;
-        bottom: 30px;
-        left: 42px;
-        width: 2px;
-        background: rgba(255, 177, 92, 0.12);
-        border-radius: 2px;
-      }
-
-      .rail i {
-        position: absolute;
-        inset: 0 0 auto;
-        height: calc(var(--fill, 0) * 100%);
-        background: linear-gradient(var(--accent-deep), var(--accent));
-        border-radius: 2px;
-        box-shadow: 0 0 10px rgba(255, 177, 92, 0.6);
-      }
-
-      .rail i::after {
-        position: absolute;
-        bottom: -6px;
-        left: -5px;
-        width: 12px;
-        height: 12px;
-        border-radius: 50%;
-        background: #f6ffd8;
-        box-shadow: 0 0 14px #e7ff9a, 0 0 4px #fff;
-        content: '';
-      }
-
-      .pipe-stage { transition: border-color 500ms ease, background 500ms ease, transform 500ms cubic-bezier(0.16, 1, 0.3, 1); }
-      .pipe-stage:not(:last-child)::after { content: none; }
-      .pipe-num { position: relative; z-index: 1; background: #141019; transition: all 500ms ease; }
-      .pipe-num svg { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
-
-      .pipe-stage.is-lit {
-        border-color: rgba(255, 177, 92, 0.34);
-        background: linear-gradient(100deg, rgba(255, 177, 92, 0.07), transparent 60%), var(--card);
-      }
-
-      .pipe-stage.is-lit .pipe-num {
-        color: #1a1006;
-        background: var(--accent);
-        box-shadow: 0 0 22px rgba(255, 177, 92, 0.55);
-      }
-
-      .patch {
-        margin-top: 30px;
-        padding: 10px;
-        border: 1px solid var(--hairline);
-        border-radius: 22px;
-        background:
-          radial-gradient(ellipse at 60% 50%, rgba(98, 230, 210, 0.07), transparent 60%),
-          #080b12;
-      }
-
-      .patch svg { display: block; width: 100%; height: auto; }
-      .patch .patch-narrow { display: none; }
-      @media (max-width: 640px) {
-        .patch .patch-wide { display: none; }
-        .patch .patch-narrow { display: block; }
-      }
-      .patch .deck { fill: #0f1520; }
-      .patch .grit { fill: rgba(255, 255, 255, 0.05); }
-      .patch .line { fill: rgba(245, 241, 232, 0.9); }
-      .patch .path-in { fill: none; stroke: #ff6474; stroke-width: 2.4; stroke-dasharray: 7 6; stroke-linecap: round; }
-      .patch .ghost { fill: none; stroke-width: 1.4; stroke-dasharray: 3 3; opacity: 0; }
-      .patch .ghost.a { stroke: #ffb15c; }
-      .patch .ghost.b { stroke: #c3bbff; }
-      .patch .mark { fill: rgba(98, 230, 210, 0.28); stroke: #62e6d2; stroke-width: 2; opacity: 0; transform-box: fill-box; transform-origin: center; }
-      .patch .dim { stroke: var(--dim); stroke-width: 1; fill: none; }
-      .patch text { font: 600 12px 'Manrope', sans-serif; fill: var(--muted); letter-spacing: 0.02em; }
-      .patch .verdict { font: 400 30px 'Fraunces', serif; fill: #62e6d2; letter-spacing: -0.02em; opacity: 0; }
-      .patch .small { font-size: 10.5px; fill: var(--dim); }
-
-      .patch .path-in { stroke-dashoffset: 400; }
-      .patch.is-in .path-in { animation: dash-in 1.2s ease-out forwards; }
-      .patch.is-in .ghost.a { animation: fade-in 500ms 1.1s forwards; }
-      .patch.is-in .ghost.b { animation: fade-in 500ms 1.35s forwards; }
-      .patch.is-in .mark { animation: stamp 600ms 1.7s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
-      .patch.is-in .verdict { animation: fade-in 700ms 2.2s forwards; }
-
-      @keyframes dash-in { to { stroke-dashoffset: 0; } }
-      @keyframes fade-in { to { opacity: 1; } }
-      @keyframes stamp {
-        0% { opacity: 0; transform: scale(2.4); }
-        60% { opacity: 1; transform: scale(0.92); }
-        100% { opacity: 1; transform: scale(1); }
-      }
-
-      .bars {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-        gap: 14px;
-        margin-top: 30px;
-      }
-
-      .bar-card {
-        padding: 20px 22px;
-        border: 1px solid var(--hairline);
-        border-radius: 18px;
-        background: var(--card);
-      }
-
-      .bar-card h3 {
-        margin: 0 0 14px;
-        font-size: 13px;
-        font-weight: 600;
-      }
-
-      .bar-row {
-        display: grid;
-        grid-template-columns: 116px 1fr 54px;
-        align-items: center;
-        gap: 12px;
-        margin-top: 10px;
-        color: var(--muted);
-        font-size: 11.5px;
-      }
-
-      .bar-row b {
-        color: var(--ink);
-        font-family: 'Fraunces', serif;
-        font-size: 17px;
-        font-weight: 400;
-        text-align: right;
-        font-variant-numeric: tabular-nums;
-      }
-
-      .bar-track {
-        height: 10px;
-        overflow: hidden;
-        border-radius: 999px;
-        background: rgba(255, 255, 255, 0.05);
-      }
-
-      .bar-track i {
-        display: block;
-        height: 100%;
-        width: var(--w);
-        border-radius: inherit;
-        background: linear-gradient(90deg, var(--accent-deep), var(--accent));
-        transform: scaleX(0);
-        transform-origin: left;
-        transition: transform 1.4s cubic-bezier(0.16, 1, 0.3, 1);
-      }
-
-      .bar-track i.cool { background: linear-gradient(90deg, #2bb3a0, #62e6d2); }
-      .bar-track i.hot { background: linear-gradient(90deg, #c23a4d, #ff6474); }
-      .bars.is-in .bar-track i { transform: scaleX(1); }
-      .bars.is-in .bar-row:nth-child(3) .bar-track i { transition-delay: 0.25s; }
-
-      .bar-note { margin: 12px 0 0; color: var(--dim); font-size: 11px; line-height: 1.6; }
-
-      @media (max-width: 900px) {
-        .hero-grid { grid-template-columns: 1fr; }
-        .rally { max-width: 560px; margin: 8px auto 0; }
-      }
-
-      @media (max-width: 640px) {
-        .rail { left: 29px; }
-        .bar-row { grid-template-columns: 92px 1fr 46px; }
-      }
-
-      @media (prefers-reduced-motion: reduce) {
-        html { scroll-behavior: auto; }
-        *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
-      }
-    </style>
+    <link rel="stylesheet" href="/src/case-study/case-study.css" />
   </head>
   <body>
     <div class="top-bar">
@@ -787,9 +130,10 @@
           whatever runs has to survive snow, glare, and zero on-site staff.
         </p>
         <div class="stat-band">
+          <div class="stat"><b data-count="8">8</b><span>clubs</span></div>
+          <div class="stat"><b data-count="900" data-suffix="+">900+</b><span>match videos</span></div>
+          <div class="stat"><b data-count="480" data-suffix="+">480+</b><span>recorded sessions</span></div>
           <div class="stat"><b data-count="2">2</b><span>cameras per court</span></div>
-          <div class="stat"><b data-count="250" data-suffix="+">250+</b><span>sessions recorded</span></div>
-          <div class="stat"><b data-count="500" data-suffix="+">500+</b><span>match videos</span></div>
           <div class="stat"><b>1080p60</b><span>dual-view capture</span></div>
         </div>
       </section>
@@ -878,6 +222,53 @@
 
       <section>
         <div class="section-head"><span>03</span></div>
+        <h2>Deployed at real clubs</h2>
+        <p class="prose">
+          The models are half the job. The other half is keeping twenty cameras across eight
+          clubs working through a platform-tennis winter &mdash; outdoors, with no IT staff on
+          site and consumer routers, where every upgrade is a drive.
+        </p>
+        <div class="field-grid">
+          <div class="field-card">
+            <h3>The recorder lives on the camera</h3>
+            <p>
+              A C program running on each Axis camera as an ACAP app. It only ever calls out over
+              HTTPS &mdash; polling for jobs, exporting from the SD card, streaming straight to the
+              video host &mdash; so nothing at the club needs an open port behind its router. It
+              reports its version for fleet visibility, and because cameras can&rsquo;t update
+              themselves, releases are planned around site visits.
+            </p>
+          </div>
+          <div class="field-card">
+            <h3>Cutovers are reversible</h3>
+            <p>
+              Moving a club onto the on-camera path is one script, and it refuses to run unless
+              every camera at that club has sent a heartbeat in the last three minutes. A single
+              flag rolls the club back.
+            </p>
+          </div>
+          <div class="field-card">
+            <h3>Monitoring written from incidents</h3>
+            <p>
+              A club&rsquo;s recordings once failed silently for two days, until a member noticed;
+              nine recorders were offline for a month before anyone checked. Now a scheduled check
+              pushes an alert within half an hour, once per incident, and live streams are watched
+              minute by minute.
+            </p>
+          </div>
+          <div class="field-card">
+            <h3>Debugging real networks</h3>
+            <p>
+              Club routers dropped RTMP streams roughly every fifty seconds, which pushed live
+              video testing to SRT. Cameras record 16&nbsp;kHz audio that YouTube silently
+              discards, so the streaming relay resamples it to 44.1&nbsp;kHz before it goes out.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <section>
+        <div class="section-head"><span>04</span></div>
         <h2>Line calls, solved in 3D</h2>
         <p class="prose">
           When a call is challenged, the solver fits gravity-constrained flight paths through the
@@ -974,7 +365,7 @@
       </section>
 
       <section>
-        <div class="section-head"><span>04</span></div>
+        <div class="section-head"><span>05</span></div>
         <h2>The models</h2>
         <p class="prose">
           Roughly <strong>twenty trained models across eight families</strong>, every one
@@ -1049,7 +440,7 @@
       </section>
 
       <section>
-        <div class="section-head"><span>05</span></div>
+        <div class="section-head"><span>06</span></div>
         <h2>Honest numbers</h2>
         <p class="prose">
           Sports-CV demos are easy to fake and production is unforgiving, so the program is run
@@ -1119,7 +510,7 @@
       </section>
 
       <section>
-        <div class="section-head"><span>06</span></div>
+        <div class="section-head"><span>07</span></div>
         <h2>How it was built</h2>
         <p class="prose">
           The entire program — camera firmware to cloud pipeline to product — is built by one
@@ -1161,63 +552,9 @@
     </footer>
 
     <script type="module">
-      const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
-      const svgNS = 'http://www.w3.org/2000/svg'
-      const el = (tag, attrs, parent) => {
-        const node = document.createElementNS(svgNS, tag)
-        for (const [key, value] of Object.entries(attrs)) node.setAttribute(key, value)
-        parent?.appendChild(node)
-        return node
-      }
+      import { el, initCaseStudy, reduced } from '/src/case-study/case-study.ts'
 
-      /* Reading progress along the sticky bar */
-      const bar = document.querySelector('.top-bar')
-      const updateProgress = () => {
-        const max = document.documentElement.scrollHeight - innerHeight
-        bar.style.setProperty('--progress', max > 0 ? (scrollY / max).toFixed(4) : 0)
-      }
-
-      /* Pipeline rail: fills to the reading line and lights each stage it passes */
-      const pipeline = document.querySelector('.pipeline')
-      const rail = pipeline.querySelector('.rail')
-      const stages = [...pipeline.querySelectorAll('.pipe-stage')]
-      const updateRail = () => {
-        const line = innerHeight * 0.62
-        const box = rail.getBoundingClientRect()
-        const fill = Math.min(Math.max((line - box.top) / box.height, 0), 1)
-        rail.style.setProperty('--fill', fill.toFixed(4))
-        for (const stage of stages) {
-          stage.classList.toggle('is-lit', stage.getBoundingClientRect().top + 30 < line)
-        }
-      }
-
-      const onScroll = () => { updateProgress(); updateRail() }
-      addEventListener('scroll', onScroll, { passive: true })
-      addEventListener('resize', onScroll, { passive: true })
-      onScroll()
-
-      /* One-shot reveals: count-ups, the contact-patch stamp, and the bars */
-      const countUp = (node) => {
-        const target = Number(node.dataset.count)
-        const suffix = node.dataset.suffix ?? ''
-        if (reduced) return
-        const start = performance.now()
-        const tick = (now) => {
-          const t = Math.min((now - start) / 1400, 1)
-          node.textContent = Math.round(target * (1 - Math.pow(1 - t, 4))) + suffix
-          if (t < 1) requestAnimationFrame(tick)
-        }
-        requestAnimationFrame(tick)
-      }
-      const reveal = new IntersectionObserver((entries) => {
-        for (const entry of entries) {
-          if (!entry.isIntersecting) continue
-          reveal.unobserve(entry.target)
-          if (entry.target.dataset.count) countUp(entry.target)
-          else entry.target.classList.add('is-in')
-        }
-      }, { threshold: 0.45 })
-      document.querySelectorAll('[data-count], .patch, .bars').forEach((node) => reveal.observe(node))
+      initCaseStudy()
 
       /* Deck texture for the contact-patch figure */
       const grit = document.getElementById('patch-grit')
