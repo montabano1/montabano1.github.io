@@ -1,5 +1,5 @@
 import { useReducedMotion } from 'motion/react'
-import { lazy, Suspense, useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { lazy, Suspense, type CSSProperties, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { HelixPlaceholder } from './components/HelixPlaceholder'
 import { Interface } from './components/Interface'
 import { SequencePanel } from './components/SequencePanel'
@@ -32,10 +32,13 @@ export default function App() {
   const [hovered, setHovered] = useState<SequenceId | null>(null)
   const [loaded, setLoaded] = useState(false)
   const [sceneMounted, setSceneMounted] = useState(false)
+  const [sceneReady, setSceneReady] = useState(false)
+  const handleSceneReady = useCallback(() => setSceneReady(true), [])
   const [transitioning, setTransitioning] = useState(false)
   const [transitionCategory, setTransitionCategory] = useState<CategoryId | null>(null)
   const [webglAvailable] = useState(canRenderWebGL)
   const returnFocusRef = useRef<HTMLElement | null>(null)
+  const glowRef = useRef<HTMLDivElement>(null)
   const navigationTimerRef = useRef<number | null>(null)
 
   useEffect(() => {
@@ -76,6 +79,28 @@ export default function App() {
     ? activeSiblings.findIndex((sequence) => sequence.id === activeSequence.id)
     : -1
   const hoveredCategory = sequences.find((sequence) => sequence.id === hovered)?.categoryId ?? null
+  const glowColor = sequences.find((sequence) => sequence.id === hovered)?.color
+
+  useEffect(() => {
+    const glow = glowRef.current
+    if (!glow || reducedMotion || !window.matchMedia('(pointer: fine)').matches) return
+    let frame = 0
+    const handleMove = (event: PointerEvent) => {
+      cancelAnimationFrame(frame)
+      frame = requestAnimationFrame(() => {
+        glow.style.transform = `translate3d(${event.clientX}px, ${event.clientY}px, 0)`
+        glow.classList.add('is-active')
+      })
+    }
+    const handleLeave = () => glow.classList.remove('is-active')
+    window.addEventListener('pointermove', handleMove, { passive: true })
+    document.documentElement.addEventListener('pointerleave', handleLeave)
+    return () => {
+      cancelAnimationFrame(frame)
+      window.removeEventListener('pointermove', handleMove)
+      document.documentElement.removeEventListener('pointerleave', handleLeave)
+    }
+  }, [reducedMotion])
 
   const handleSelect = useCallback((id: SequenceId) => {
     if (navigationTimerRef.current) window.clearTimeout(navigationTimerRef.current)
@@ -150,10 +175,15 @@ export default function App() {
         <div className="atmosphere-haze" />
         <div className="atmosphere-noise" />
         <div className="atmosphere-grid" />
+        <div
+          ref={glowRef}
+          className="cursor-glow"
+          style={glowColor ? ({ '--glow-color': glowColor } as CSSProperties) : undefined}
+        />
       </div>
 
       {webglAvailable && sceneMounted ? (
-        <Suspense fallback={<HelixPlaceholder />}>
+        <Suspense fallback={null}>
           <HelixScene
             sequences={sequences}
             selected={selected}
@@ -167,11 +197,13 @@ export default function App() {
             onHover={setHovered}
             onNavigate={handleNavigate}
             onClose={handleClose}
+            onReady={handleSceneReady}
           />
         </Suspense>
-      ) : (
-        <HelixPlaceholder />
-      )}
+      ) : null}
+      {/* Shown while the 3D chunk loads and its first frames compile, then
+          crossfades out; it stays for good when WebGL is unavailable. */}
+      <HelixPlaceholder hidden={webglAvailable && sceneReady} />
 
       <div id="sequence-navigation" tabIndex={-1}>
         <Interface

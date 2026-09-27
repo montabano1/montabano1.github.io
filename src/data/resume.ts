@@ -1,3 +1,5 @@
+import type { FigureKind } from '../components/PanelFigure'
+
 export type CategoryId = 'experience' | 'work' | 'craft' | 'contact'
 export type SequenceId = string
 
@@ -16,6 +18,7 @@ export type Sequence = {
   title: string
   color: string
   glow: string
+  figure?: FigureKind
   intro: string
   detail: string
   tags: string[]
@@ -50,6 +53,7 @@ export const sequences: Sequence[] = [
     title: 'Leading account opening',
     color: category('experience').color,
     glow: category('experience').glow,
+    figure: 'timeline',
     intro: 'Principal Engineer · Capital One · 2025–Present',
     detail:
       'Leading the Account Opening iOS engineering team and recognized with a “Top Dog” award for championing AI and collaboration across engineering teams.',
@@ -62,6 +66,7 @@ export const sequences: Sequence[] = [
     title: 'Shipping the future',
     color: category('experience').color,
     glow: category('experience').glow,
+    figure: 'timeline',
     intro: 'E5 Software Engineer · Meta · 2020–2024',
     detail:
       'Built and shipped the Orion AR glasses prototype, integrated Ray-Ban Meta and other wearables with Meta’s iOS apps for peer-to-peer video calling, and led the Instagram iOS smartwatch team.',
@@ -74,6 +79,7 @@ export const sequences: Sequence[] = [
     title: 'Reliability in production',
     color: category('experience').color,
     glow: category('experience').glow,
+    figure: 'timeline',
     intro: 'Senior iOS Developer / Project Manager · EarthCam · 2019–2020',
     detail:
       'Oversaw development of four live-production iOS apps while reducing crash frequency from 4.8% to 0.7% of users.',
@@ -86,6 +92,7 @@ export const sequences: Sequence[] = [
     title: 'PaddleScreens',
     color: category('work').color,
     glow: category('work').glow,
+    figure: 'court',
     intro: 'Court cameras, vision models, and line calls — end to end',
     detail:
       'Industrial cameras bolted to real platform-tennis courts feed a pipeline I built end to end: on-camera detection, dual-view sync and calibration, ball tracking, pose estimation, court segmentation, shot classification, and 3D flight solving. Members scan a QR code, play, and the match is recorded, analyzed, and ready before they leave the club.',
@@ -111,6 +118,7 @@ export const sequences: Sequence[] = [
     title: 'Catetus',
     color: category('work').color,
     glow: category('work').glow,
+    figure: 'splats',
     intro: 'Production infrastructure for Gaussian Splats',
     detail:
       'A Rust toolchain that compresses, validates, and ships 3D Gaussian Splat assets — standards-aligned KHR glTF and SPZ output, deterministic visual-diff quality gates, and SplatBench, an open 28-scene benchmark with a public leaderboard.',
@@ -127,6 +135,7 @@ export const sequences: Sequence[] = [
     title: 'Autonomous trading lab',
     color: category('work').color,
     glow: category('work').glow,
+    figure: 'ticker',
     intro: 'An AI analyst wrapped in deterministic risk controls',
     detail:
       'A 24/7 paper-trading system: deterministic Python ingests SEC EDGAR and market data and screens candidates, an LLM session wakes to produce forecasts and typed trade proposals, and a deterministic risk engine — never the model — validates, sizes, and submits each order. Every decision is journaled and scored against a shadow twin.',
@@ -139,6 +148,7 @@ export const sequences: Sequence[] = [
     title: 'Tutorius Math',
     color: category('work').color,
     glow: category('work').glow,
+    figure: 'equation',
     intro: 'Premium tutoring made accessible at scale',
     detail:
       'A full-stack iOS learning app with 10,000+ first-year downloads, an AI tutor, personalized CoreData and Firestore feedback, and custom inline LaTeX rendering.',
@@ -155,6 +165,7 @@ export const sequences: Sequence[] = [
     title: 'RecruitPlan',
     color: category('work').color,
     glow: category('work').glow,
+    figure: 'network',
     intro: 'AI-powered guidance for athletic recruiting',
     detail:
       'An all-in-one recruiting platform shaped through interviews with coaches, parents, athletes, and administrators, with an AI assistant for next steps and admission probabilities.',
@@ -171,6 +182,7 @@ export const sequences: Sequence[] = [
     title: 'AI-augmented throughput',
     color: category('craft').color,
     glow: category('craft').glow,
+    figure: 'agents',
     intro: 'One engineer, running like a team',
     detail:
       'I orchestrate fleets of coding agents — research, implementation, and adversarial review running in parallel, with hard verification gates before anything ships. The PaddleScreens model program, the trading lab, and this site were all built that way.',
@@ -183,6 +195,7 @@ export const sequences: Sequence[] = [
     title: 'Across every layer',
     color: category('craft').color,
     glow: category('craft').glow,
+    figure: 'layers',
     intro: 'Native, web, systems, and cloud',
     detail:
       'A cross-platform toolkit spanning C++, Kotlin, Swift, Objective-C, React Native, TypeScript, Node, Python, PostgreSQL, and AWS.',
@@ -195,6 +208,7 @@ export const sequences: Sequence[] = [
     title: 'Math meets mentorship',
     color: category('craft').color,
     glow: category('craft').glow,
+    figure: 'calculus',
     intro: 'Professor, technical lead, lifelong learner',
     detail:
       'Taught differential equations and multivariable calculus, then designed a placement algorithm that reduced initial math-class dropouts by 17%.',
@@ -207,6 +221,7 @@ export const sequences: Sequence[] = [
     title: 'The full picture',
     color: category('contact').color,
     glow: category('contact').glow,
+    figure: 'document',
     intro: 'Experience, education, and technical range',
     detail:
       'Mathematics at Carnegie Mellon, Math Education at Columbia, and a career building products from classrooms to AR glasses.',
@@ -223,6 +238,7 @@ export const sequences: Sequence[] = [
     title: 'Build together',
     color: category('contact').color,
     glow: category('contact').glow,
+    figure: 'strands',
     intro: 'The best work starts with a specific hard problem',
     detail:
       'Tell me what you are trying to make, what makes it difficult, and why it matters. That is enough to begin.',
@@ -235,6 +251,7 @@ export const sequences: Sequence[] = [
     title: 'Send a signal',
     color: category('contact').color,
     glow: category('contact').glow,
+    figure: 'signal',
     intro: 'Direct is good',
     detail:
       'Email is the fastest way to reach me. LinkedIn and GitHub are available in the persistent navigation.',

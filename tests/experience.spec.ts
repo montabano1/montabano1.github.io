@@ -54,6 +54,8 @@ test('serves the PaddleScreens case study', async ({ page }) => {
     'href',
     'https://www.paddlescreens.com/demo',
   )
+  await expect(page.getByRole('img', { name: /simulated rally/i })).toBeVisible()
+  await expect(page.getByRole('img', { name: /solved challenge/i })).toBeVisible()
 })
 
 test('deep link opens the PaddleScreens panel with case-study links', async ({ page }) => {
@@ -67,4 +69,5 @@ test('deep link opens the PaddleScreens panel with case-study links', async ({ p
     'href',
     'https://www.paddlescreens.com/demo',
   )
+  await expect(page.getByRole('img', { name: /rally simulated in 3D/i })).toBeVisible()
 })

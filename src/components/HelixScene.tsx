@@ -1,7 +1,5 @@
 import {
-  AdaptiveDpr,
   Environment,
-  Html,
   Instance,
   Instances,
   Lightformer,
@@ -12,6 +10,7 @@ import { Bloom, EffectComposer, Noise, Vignette } from '@react-three/postprocess
 import {
   memo,
   Suspense,
+  useCallback,
   useEffect,
   useLayoutEffect,
   useMemo,
@@ -44,6 +43,7 @@ type SceneProps = {
   onHover: (id: SequenceId | null) => void
   onNavigate: (direction: -1 | 1) => void
   onClose: () => void
+  onReady?: () => void
 }
 
 const HELIX_POINTS = 34
@@ -168,13 +168,21 @@ function connectorEndpoints(index: number) {
   }
 }
 
-function ConnectorPlayground({
+type RowRefs = RefObject<Record<string, HTMLDivElement | null>>
+
+/**
+ * Invisible DOM hit targets that track each connector on screen: they give the
+ * helix keyboard focus, accessible names, and cheap pointer hit-testing. They
+ * live beside the canvas (not inside drei's <Html>, which re-renders a separate
+ * React root on every parent render) and move by transform only.
+ */
+const ConnectorPlayground = memo(function ConnectorPlayground({
   sequences,
   selected,
   onSelect,
   onHover,
   rows,
-}: SceneProps & { rows: RefObject<Record<string, HTMLDivElement | null>> }) {
+}: Pick<SceneProps, 'sequences' | 'selected' | 'onSelect' | 'onHover'> & { rows: RowRefs }) {
   const previousSelected = useRef<SequenceId | null>(null)
   const [returningId, setReturningId] = useState<SequenceId | null>(null)
   const orderedSequences = useMemo(() => orderSequences(sequences), [sequences])
@@ -193,8 +201,7 @@ function ConnectorPlayground({
   }, [selected])
 
   return (
-    <Html fullscreen zIndexRange={[30, 0]} style={{ pointerEvents: 'none' }}>
-      <div className="connector-playground">
+    <div className="connector-playground">
         {orderedSequences.map((sequence) => {
           const isSelected = selected === sequence.id
           const isReturning = returningId === sequence.id
@@ -234,12 +241,11 @@ function ConnectorPlayground({
             </div>
           )
         })}
-      </div>
-    </Html>
+    </div>
   )
-}
+})
 
-function MeshConnector({
+const MeshConnector = memo(function MeshConnector({
   sequence,
   markerIndex,
   selected,
@@ -255,8 +261,8 @@ function MeshConnector({
   hovered: boolean
   muted: boolean
   reducedMotion: boolean
-  onSelect: () => void
-  onHover: (hovering: boolean) => void
+  onSelect: (id: SequenceId) => void
+  onHover: (id: SequenceId | null) => void
 }) {
   const outerRef = useRef<Group>(null)
   const connectorRef = useRef<Group>(null)
@@ -359,13 +365,13 @@ function MeshConnector({
         quaternion={transform.quaternion}
         onClick={(event) => {
           event.stopPropagation()
-          if (!muted && !selected) onSelect()
+          if (!muted && !selected) onSelect(sequence.id)
         }}
         onPointerEnter={(event) => {
           event.stopPropagation()
-          if (!muted) onHover(true)
+          if (!muted) onHover(sequence.id)
         }}
-        onPointerLeave={() => onHover(false)}
+        onPointerLeave={() => onHover(null)}
       >
         <RoundedBox args={[transform.length, 0.18, 0.11]} radius={0.075} smoothness={3}>
           <meshPhysicalMaterial
@@ -383,7 +389,10 @@ function MeshConnector({
       </group>
     </group>
   )
-}
+})
+
+const ROW_BASE_WIDTH = 100
+const ROW_BASE_HEIGHT = 18
 
 function MolecularHelix({
   sequences,
@@ -391,17 +400,16 @@ function MolecularHelix({
   hovered,
   paused,
   reducedMotion,
-  itemIndex,
-  itemCount,
-  navigating,
   onSelect,
   onHover,
-  onNavigate,
-  onClose,
   compactRendering,
-}: SceneProps & { compactRendering: boolean }) {
+  rows,
+}: Pick<
+  SceneProps,
+  'sequences' | 'selected' | 'hovered' | 'paused' | 'reducedMotion' | 'onSelect' | 'onHover'
+> & { compactRendering: boolean; rows: RowRefs }) {
   const group = useRef<Group>(null)
-  const rows = useRef<Record<string, HTMLDivElement | null>>({})
+  const lastWrites = useRef<Record<string, string>>({})
   const { camera, size } = useThree()
   const orderedSequences = useMemo(() => orderSequences(sequences), [sequences])
   const layouts = useMemo(
@@ -432,33 +440,33 @@ function MolecularHelix({
     const panelLeft = compact ? size.width * 0.03 : size.width - size.width * 0.05 - panelWidth
     const panelTop = compact ? size.height * 0.05 : size.height * 0.2
 
+    // Every row is a fixed 100×18 box moved purely by transform — one
+    // compositor-friendly write per row per frame, and only when it changed.
     layouts.forEach(({ sequence, start, end }) => {
       const element = rows.current[sequence.id]
       if (!element) return
+      let transform: string
+      let zIndex: string
       if (selected === sequence.id) {
-        element.style.left = `${panelLeft}px`
-        element.style.top = `${panelTop}px`
-        element.style.width = `${panelWidth}px`
-        element.style.height = `${panelHeight}px`
-        element.style.transform = 'translate(0, 0) rotate(0rad)'
-        element.style.zIndex = '30'
-        return
+        transform = `translate(${(panelLeft + panelWidth / 2).toFixed(2)}px, ${(panelTop + panelHeight / 2).toFixed(2)}px) rotate(0rad) scale(${(panelWidth / ROW_BASE_WIDTH).toFixed(4)}, ${(panelHeight / ROW_BASE_HEIGHT).toFixed(4)})`
+        zIndex = '30'
+      } else {
+        projectedStart.copy(start).applyMatrix4(group.current!.matrixWorld).project(camera)
+        projectedEnd.copy(end).applyMatrix4(group.current!.matrixWorld).project(camera)
+        const startX = (projectedStart.x * 0.5 + 0.5) * size.width
+        const startY = (-projectedStart.y * 0.5 + 0.5) * size.height
+        const endX = (projectedEnd.x * 0.5 + 0.5) * size.width
+        const endY = (-projectedEnd.y * 0.5 + 0.5) * size.height
+        const width = Math.max(Math.hypot(endX - startX, endY - startY), 28)
+        const angle = Math.atan2(endY - startY, endX - startX)
+        transform = `translate(${((startX + endX) / 2).toFixed(2)}px, ${((startY + endY) / 2).toFixed(2)}px) rotate(${angle.toFixed(4)}rad) scale(${(width / ROW_BASE_WIDTH).toFixed(4)}, ${((compact ? 12 : 18) / ROW_BASE_HEIGHT).toFixed(4)})`
+        zIndex = `${Math.round(12 - projectedStart.z * 4)}`
       }
-
-      projectedStart.copy(start).applyMatrix4(group.current!.matrixWorld).project(camera)
-      projectedEnd.copy(end).applyMatrix4(group.current!.matrixWorld).project(camera)
-      const startX = (projectedStart.x * 0.5 + 0.5) * size.width
-      const startY = (-projectedStart.y * 0.5 + 0.5) * size.height
-      const endX = (projectedEnd.x * 0.5 + 0.5) * size.width
-      const endY = (-projectedEnd.y * 0.5 + 0.5) * size.height
-      const width = Math.hypot(endX - startX, endY - startY)
-      const angle = Math.atan2(endY - startY, endX - startX)
-      element.style.left = `${(startX + endX) / 2}px`
-      element.style.top = `${(startY + endY) / 2}px`
-      element.style.width = `${Math.max(width, 28)}px`
-      element.style.height = `${compact ? 12 : 18}px`
-      element.style.transform = `translate(-50%, -50%) rotate(${angle}rad)`
-      element.style.zIndex = `${Math.round(12 - projectedStart.z * 4)}`
+      const key = transform + zIndex
+      if (lastWrites.current[sequence.id] === key) return
+      lastWrites.current[sequence.id] = key
+      element.style.transform = transform
+      element.style.zIndex = zIndex
     })
   })
 
@@ -485,26 +493,11 @@ function MolecularHelix({
             hovered={hovered === sequence.id}
             muted={selected !== null && selected !== sequence.id}
             reducedMotion={reducedMotion}
-            onSelect={() => onSelect(sequence.id)}
-            onHover={(hovering) => onHover(hovering ? sequence.id : null)}
+            onSelect={onSelect}
+            onHover={onHover}
           />
         ))}
       </group>
-      <ConnectorPlayground
-        rows={rows}
-        sequences={sequences}
-        selected={selected}
-        hovered={hovered}
-        paused={paused}
-        reducedMotion={reducedMotion}
-        itemIndex={itemIndex}
-        itemCount={itemCount}
-        navigating={navigating}
-        onSelect={onSelect}
-        onHover={onHover}
-        onNavigate={onNavigate}
-        onClose={onClose}
-      />
     </>
   )
 }
@@ -529,10 +522,10 @@ function CameraRig({
   return null
 }
 
-function SceneContent(props: SceneProps) {
-  const { size } = useThree()
-  const compactRendering = size.width < 760
-
+// Everything static in the scene is memoized so a hover (which re-renders the
+// helix) never reconciles the lights, re-bakes the environment map, or rebuilds
+// the post-processing passes.
+const Lights = memo(function Lights() {
   return (
     <>
       <color attach="background" args={['#0a0d15']} />
@@ -541,48 +534,96 @@ function SceneContent(props: SceneProps) {
       <directionalLight position={[5, 4, 6]} intensity={3.6} color="#fff1dc" />
       <directionalLight position={[-5, -2, 2]} intensity={2.1} color="#8ea8ff" />
       <spotLight position={[0, 7, -2]} intensity={4.2} angle={0.45} penumbra={1} color="#ffb7a7" />
+    </>
+  )
+})
+
+const StudioEnvironment = memo(function StudioEnvironment({ compact }: { compact: boolean }) {
+  return (
+    <Environment resolution={compact ? 32 : 96} environmentIntensity={0.38}>
+      <group rotation={[-Math.PI / 3, 0, 0.4]}>
+        <Lightformer
+          form="ring"
+          intensity={2.2}
+          color="#d9eee8"
+          scale={[5, 5, 1]}
+          position={[0, 5, -3]}
+        />
+        <Lightformer
+          form="rect"
+          intensity={1.4}
+          color="#517f78"
+          scale={[3, 1.2, 1]}
+          position={[-4, 1, 2]}
+        />
+        <Lightformer
+          form="rect"
+          intensity={1}
+          color="#b68b64"
+          scale={[2, 3, 1]}
+          position={[4, -2, 1]}
+        />
+      </group>
+    </Environment>
+  )
+})
+
+const Effects = memo(function Effects() {
+  return (
+    <EffectComposer multisampling={4}>
+      <Bloom mipmapBlur intensity={0.64} luminanceThreshold={0.58} luminanceSmoothing={0.38} />
+      <Noise opacity={0.018} />
+      <Vignette eskil={false} offset={0.12} darkness={0.78} />
+    </EffectComposer>
+  )
+})
+
+type SceneContentProps = Pick<
+  SceneProps,
+  'sequences' | 'selected' | 'hovered' | 'paused' | 'reducedMotion' | 'onSelect' | 'onHover'
+> & { rows: RowRefs }
+
+function SceneContent(props: SceneContentProps) {
+  const compactRendering = useThree((state) => state.size.width < 760)
+
+  return (
+    <>
+      <Lights />
       <MolecularHelix {...props} compactRendering={compactRendering} />
       <CameraRig selected={props.selected} reducedMotion={props.reducedMotion} />
-      <Environment resolution={compactRendering ? 32 : 96} environmentIntensity={0.38}>
-        <group rotation={[-Math.PI / 3, 0, 0.4]}>
-          <Lightformer
-            form="ring"
-            intensity={2.2}
-            color="#d9eee8"
-            scale={[5, 5, 1]}
-            position={[0, 5, -3]}
-          />
-          <Lightformer
-            form="rect"
-            intensity={1.4}
-            color="#517f78"
-            scale={[3, 1.2, 1]}
-            position={[-4, 1, 2]}
-          />
-          <Lightformer
-            form="rect"
-            intensity={1}
-            color="#b68b64"
-            scale={[2, 3, 1]}
-            position={[4, -2, 1]}
-          />
-        </group>
-      </Environment>
-      {props.reducedMotion || compactRendering ? null : (
-        <EffectComposer multisampling={0}>
-          <Bloom mipmapBlur intensity={0.64} luminanceThreshold={0.58} luminanceSmoothing={0.38} />
-          <Noise opacity={0.018} />
-          <Vignette eskil={false} offset={0.12} darkness={0.78} />
-        </EffectComposer>
-      )}
-      <AdaptiveDpr pixelated />
+      <StudioEnvironment compact={compactRendering} />
+      {props.reducedMotion || compactRendering ? null : <Effects />}
     </>
   )
 }
 
+/**
+ * Reports readiness after a few real frames, once shaders have compiled and the
+ * environment has baked — the first-frame stall happens behind the placeholder.
+ */
+function ReadySignal({ onReady }: { onReady?: () => void }) {
+  const frames = useRef(0)
+  useFrame(() => {
+    frames.current += 1
+    if (frames.current === 4) onReady?.()
+  })
+  return null
+}
+
+// Long enough for an opened connector to finish damping into the panel.
+const SETTLE_MS = 1600
+
 export function HelixScene(props: SceneProps) {
+  const { sequences, selected, hovered, paused, reducedMotion, onSelect, onHover, onReady } = props
+  const [ready, setReady] = useState(false)
+  const handleReady = useCallback(() => {
+    setReady(true)
+    onReady?.()
+  }, [onReady])
+  const rows = useRef<Record<string, HTMLDivElement | null>>({})
   const [pageVisible, setPageVisible] = useState(() => document.visibilityState === 'visible')
   const [compactViewport, setCompactViewport] = useState(() => window.innerWidth < 760)
+  const [settled, setSettled] = useState(false)
 
   useEffect(() => {
     const handleVisibility = () => setPageVisible(document.visibilityState === 'visible')
@@ -595,18 +636,56 @@ export function HelixScene(props: SceneProps) {
     }
   }, [])
 
+  // While a panel is open the helix stops spinning; once everything has
+  // damped into place, stop rendering frames that would be identical and give
+  // the GPU to the panel. Any change of selection wakes it back up.
+  useEffect(() => {
+    setSettled(false)
+    if (!paused) return
+    const timer = window.setTimeout(() => setSettled(true), SETTLE_MS)
+    return () => window.clearTimeout(timer)
+  }, [paused, selected])
+
   return (
-    <Canvas
-      className="molecular-canvas"
-      dpr={compactViewport ? [1, 1.2] : [1, 1.5]}
-      camera={{ position: [0, 0, 8.2], fov: 42, near: 0.1, far: 60 }}
-      gl={{ antialias: true, alpha: false, powerPreference: 'high-performance' }}
-      frameloop={pageVisible ? 'always' : 'never'}
-      onPointerMissed={() => props.onHover(null)}
-    >
-      <Suspense fallback={null}>
-        <SceneContent {...props} />
-      </Suspense>
-    </Canvas>
+    <>
+      <Canvas
+        className={`molecular-canvas ${ready ? 'is-ready' : ''}`}
+        // The helix is GPU-bound: on a retina desktop, 1.5x DPR costs more than
+        // twice the fragments of 1x and drops frames. Render at 1x and let the
+        // composer's MSAA keep the edges clean instead.
+        dpr={compactViewport ? [1, 1.2] : 1}
+        camera={{ position: [0, 0, 8.2], fov: 42, near: 0.1, far: 60 }}
+        // The desktop composer does its own MSAA; antialiasing the default
+        // framebuffer as well would pay for it twice.
+        gl={{
+          antialias: compactViewport || reducedMotion,
+          alpha: false,
+          powerPreference: 'high-performance',
+        }}
+        frameloop={!pageVisible ? 'never' : settled ? 'demand' : 'always'}
+        onPointerMissed={() => onHover(null)}
+      >
+        <Suspense fallback={null}>
+          <ReadySignal onReady={handleReady} />
+          <SceneContent
+            rows={rows}
+            sequences={sequences}
+            selected={selected}
+            hovered={hovered}
+            paused={paused}
+            reducedMotion={reducedMotion}
+            onSelect={onSelect}
+            onHover={onHover}
+          />
+        </Suspense>
+      </Canvas>
+      <ConnectorPlayground
+        rows={rows}
+        sequences={sequences}
+        selected={selected}
+        onSelect={onSelect}
+        onHover={onHover}
+      />
+    </>
   )
 }

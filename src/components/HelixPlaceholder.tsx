@@ -1,6 +1,6 @@
-const WIDTH = 200
+const WIDTH = 250
 const HEIGHT = 700
-const AMPLITUDE = 62
+const AMPLITUDE = 108
 const TURNS = 3.2
 const STEPS = 96
 const RUNG_COLORS = ['#62e6d2', '#ffb15c', '#ff6474', '#a7d957']
@@ -35,12 +35,14 @@ const rungs = (() => {
   return items
 })()
 
-export function HelixPlaceholder() {
+export function HelixPlaceholder({ hidden = false }: { hidden?: boolean }) {
   return (
-    <div className="helix-placeholder" aria-hidden="true">
+    <div className={`helix-placeholder ${hidden ? 'is-hidden' : ''}`} aria-hidden="true">
       <svg viewBox={`0 0 ${WIDTH} ${HEIGHT}`} preserveAspectRatio="xMidYMid meet">
-        {rungs.map((rung) => (
+        {rungs.map((rung, index) => (
           <line
+            className="placeholder-rung"
+            style={{ animationDelay: `${0.3 + index * 0.06}s` }}
             key={rung.y}
             x1={rung.xa}
             y1={rung.y}
@@ -52,8 +54,8 @@ export function HelixPlaceholder() {
             opacity="0.55"
           />
         ))}
-        <path d={strandPath(0)} fill="none" stroke="#aeb9b4" strokeWidth="5" strokeLinecap="round" opacity="0.6" />
-        <path d={strandPath(Math.PI)} fill="none" stroke="#7f8e89" strokeWidth="5" strokeLinecap="round" opacity="0.5" />
+        <path className="placeholder-strand" pathLength={1} d={strandPath(0)} fill="none" stroke="#aeb9b4" strokeWidth="5" strokeLinecap="round" opacity="0.6" />
+        <path className="placeholder-strand is-second" pathLength={1} d={strandPath(Math.PI)} fill="none" stroke="#7f8e89" strokeWidth="5" strokeLinecap="round" opacity="0.5" />
       </svg>
     </div>
   )
