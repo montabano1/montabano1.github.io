@@ -15,12 +15,22 @@ function getHashSequence(): SequenceId | null {
   return sequenceIds.has(hash) ? hash : null
 }
 
+/**
+ * WebGL2 on real graphics hardware. Software rasterizers (SwiftShader,
+ * llvmpipe) technically work but take seconds per frame, so those visitors get
+ * the static SVG helix instead of a frozen page.
+ */
 function canRenderWebGL() {
   try {
     const canvas = document.createElement('canvas')
-    return Boolean(
-      window.WebGL2RenderingContext && canvas.getContext('webgl2', { failIfMajorPerformanceCaveat: true }),
-    )
+    const gl = window.WebGL2RenderingContext
+      ? canvas.getContext('webgl2', { failIfMajorPerformanceCaveat: true })
+      : null
+    if (!gl) return false
+    const info = gl.getExtension('WEBGL_debug_renderer_info')
+    const renderer = info ? String(gl.getParameter(info.UNMASKED_RENDERER_WEBGL)) : ''
+    gl.getExtension('WEBGL_lose_context')?.loseContext()
+    return !/swiftshader|llvmpipe|software/i.test(renderer)
   } catch {
     return false
   }

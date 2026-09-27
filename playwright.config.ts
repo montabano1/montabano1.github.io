@@ -17,11 +17,24 @@ export default defineConfig({
   projects: [
     {
       name: 'desktop-chromium',
+      testIgnore: /helix\.spec/,
       use: { ...devices['Desktop Chrome'] },
     },
     {
       name: 'mobile-chromium',
+      testIgnore: /helix\.spec/,
       use: { ...devices['Pixel 7'] },
+    },
+    {
+      // The 3D helix only runs on real graphics hardware; this project asks
+      // Chromium for the GPU and skips itself where only software GL exists.
+      name: 'desktop-gpu',
+      testMatch: /helix\.spec/,
+      use: {
+        ...devices['Desktop Chrome'],
+        reducedMotion: 'no-preference',
+        launchOptions: { args: ['--use-angle=metal', '--enable-gpu', '--ignore-gpu-blocklist'] },
+      },
     },
   ],
 })

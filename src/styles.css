@@ -101,6 +101,12 @@ a:focus-visible {
   opacity: 1;
 }
 
+.molecular-canvas canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
 .connector-playground {
   position: absolute;
   z-index: 1;
