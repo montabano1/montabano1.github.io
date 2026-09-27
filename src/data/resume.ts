@@ -169,9 +169,10 @@ export const sequences: Sequence[] = [
     figure: 'equation',
     intro: 'SAT and ACT math prep on iOS',
     detail:
-      'A UIKit app with 450+ practice questions across 15 units, an adaptive ranking that recommends the next topic from accuracy and coverage, custom inline LaTeX rendering, Firebase and CoreData persistence, and Stripe subscriptions through Cloud Functions.',
+      'A UIKit app that reached 10,000+ downloads in its first year: 450+ practice questions across 15 units, an adaptive ranking that recommends the next topic from accuracy and coverage, custom inline LaTeX rendering, Firebase and CoreData persistence, and Stripe subscriptions through Cloud Functions.',
     tags: ['iOS', 'Swift', 'Education'],
     stats: [
+      { value: '10,000+', label: 'First-year downloads' },
       { value: '4.8★', label: 'App Store rating' },
       { value: '450+', label: 'Practice questions' },
     ],
@@ -179,6 +180,19 @@ export const sequences: Sequence[] = [
       label: 'View on the App Store',
       href: 'https://apps.apple.com/us/app/tutorius-math/id1544620273',
     },
+  },
+  {
+    id: 'craft-field',
+    categoryId: 'craft',
+    label: 'Capabilities',
+    title: 'In the field',
+    color: category('craft').color,
+    glow: category('craft').glow,
+    figure: 'route',
+    intro: 'Where the software meets the customer',
+    detail:
+      'PaddleScreens runs at eight clubs with no IT staff, where every camera upgrade is a site visit — so cutovers refuse to start until every camera checks in, and roll back with one flag. Beleeg’s first real league was migrated in from its old app, and its organizer’s feedback became the backlog. RecruitPlan’s club features were shaped around a live club pilot.',
+    tags: ['On-site deployment', 'Data migration', 'Customer feedback'],
   },
   {
     id: 'craft-ai',

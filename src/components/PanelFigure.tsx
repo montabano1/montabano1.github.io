@@ -15,6 +15,7 @@ export type FigureKind =
   | 'signal'
   | 'bracket'
   | 'calibration'
+  | 'route'
 
 type FigureProps = {
   kind: FigureKind
@@ -658,6 +659,32 @@ function CalibrationFigure() {
   )
 }
 
+/* ---------------------------------------------------------------- route */
+
+const STOPS = [
+  { x: 70, y: 96, label: 'camera install', above: false },
+  { x: 262, y: 56, label: 'league migration', above: true },
+  { x: 448, y: 92, label: 'club pilot', above: false },
+]
+const ROUTE = 'M70 96C140 96 170 56 262 56S380 92 448 92'
+
+function RouteFigure() {
+  return (
+    <Frame label="A route between three customer sites — a camera install, a league migration, and a club pilot — lighting each one up as it arrives">
+      <path className="fig-route" d={ROUTE} />
+      <path className="fig-route-trace" d={ROUTE} pathLength={1} />
+      {STOPS.map((stop, index) => (
+        <g key={stop.label} className="fig-stop" style={{ animationDelay: `${0.9 + index * 1.1}s` }}>
+          <path d={`M${stop.x} ${stop.y}c-9 -11 -14 -17 -14 -24a14 14 0 0 1 28 0c0 7 -5 13 -14 24z`} />
+          <circle cx={stop.x} cy={stop.y - 24} r="4.5" />
+          <text className="fig-caption" x={stop.x} y={stop.above ? stop.y - 44 : stop.y + 18} textAnchor="middle">{stop.label}</text>
+        </g>
+      ))}
+      <circle className="fig-traveler" r="5" style={{ offsetPath: `path('${ROUTE}')` }} />
+    </Frame>
+  )
+}
+
 export function PanelFigure({ kind, sequenceId, reducedMotion }: FigureProps) {
   switch (kind) {
     case 'court':
@@ -688,5 +715,7 @@ export function PanelFigure({ kind, sequenceId, reducedMotion }: FigureProps) {
       return <BracketFigure reducedMotion={reducedMotion} />
     case 'calibration':
       return <CalibrationFigure />
+    case 'route':
+      return <RouteFigure />
   }
 }

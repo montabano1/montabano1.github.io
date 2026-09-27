@@ -1996,3 +1996,28 @@ a:focus-visible {
 .fig-new-label { fill: currentColor; animation: fade-in-fig 500ms 2.5s both; }
 @keyframes dot-pop { from { opacity: 0; transform: scale(0); } }
 @keyframes fade-in-fig { from { opacity: 0; } }
+
+/* route (In the field) */
+.fig-route { fill: none; stroke: rgba(245, 241, 232, 0.14); stroke-width: 2; stroke-dasharray: 2 6; stroke-linecap: round; }
+.fig-route-trace { fill: none; stroke: currentColor; stroke-width: 2; stroke-dasharray: 1; stroke-dashoffset: 1; animation: route-trace 3.6s 0.8s ease-in-out infinite; }
+@keyframes route-trace { 0% { stroke-dashoffset: 1; } 70%, 100% { stroke-dashoffset: 0; } }
+.fig-stop path { fill: #0a0e16; stroke: currentColor; stroke-width: 1.5; }
+.fig-stop circle { fill: currentColor; }
+.fig-stop { animation: stop-arrive 3.6s ease-in-out infinite; }
+@keyframes stop-arrive { 0%, 8% { opacity: 0.35; } 18%, 100% { opacity: 1; } }
+.fig-traveler { fill: var(--ink); filter: drop-shadow(0 0 6px currentColor); offset-rotate: 0deg; animation: route-travel 3.6s 0.8s ease-in-out infinite; }
+@keyframes route-travel { 0% { offset-distance: 0%; opacity: 1; } 70% { offset-distance: 100%; opacity: 1; } 85%, 100% { offset-distance: 100%; opacity: 0; } }
+
+/* Project links inside the hero intro */
+.hero-intro a {
+  color: #e9e3d6;
+  text-decoration: underline;
+  text-decoration-color: rgba(195, 187, 255, 0.45);
+  text-underline-offset: 3px;
+  transition: color 180ms ease, text-decoration-color 180ms ease;
+}
+
+.hero-intro a:hover {
+  color: #ffffff;
+  text-decoration-color: #c3bbff;
+}

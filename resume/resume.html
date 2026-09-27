@@ -1,0 +1,264 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Michael Montalbano — Résumé</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Manrope:wght@400;500;600;700&display=block"
+      rel="stylesheet"
+    />
+    <style>
+      @page { size: Letter; margin: 0; }
+
+      * { box-sizing: border-box; }
+
+      body {
+        margin: 0;
+        color: #1d2129;
+        font: 400 9pt/1.36 'Manrope', sans-serif;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+      }
+
+      .page {
+        width: 8.5in;
+        min-height: 11in;
+        padding: 0.42in 0.5in 0.36in;
+      }
+
+      header {
+        display: flex;
+        align-items: flex-end;
+        justify-content: space-between;
+        gap: 18px;
+        padding-bottom: 10px;
+        border-bottom: 1.5px solid #1d2129;
+      }
+
+      h1 {
+        margin: 0;
+        font: 600 23pt/1 'Fraunces', serif;
+        letter-spacing: -0.02em;
+      }
+
+      .role {
+        margin: 5px 0 0;
+        color: #b35a12;
+        font-size: 10.5pt;
+        font-weight: 600;
+      }
+
+      .contact {
+        color: #4a515c;
+        font-size: 8.6pt;
+        line-height: 1.55;
+        text-align: right;
+      }
+
+      .contact a { color: inherit; text-decoration: none; }
+
+      .summary {
+        margin: 10px 0 0;
+        color: #333a45;
+        font-size: 9.6pt;
+        line-height: 1.5;
+      }
+
+      h2 {
+        margin: 11px 0 5px;
+        padding-bottom: 3px;
+        border-bottom: 1px solid #d8dbe0;
+        color: #b35a12;
+        font-size: 8.6pt;
+        font-weight: 700;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+      }
+
+      .item { margin: 0 0 7px; break-inside: avoid; }
+
+      .item-head {
+        display: flex;
+        align-items: baseline;
+        justify-content: space-between;
+        gap: 12px;
+      }
+
+      .item-head h3 {
+        margin: 0;
+        font-size: 10pt;
+        font-weight: 700;
+      }
+
+      .item-head h3 span {
+        color: #4a515c;
+        font-weight: 500;
+      }
+
+      .item-head h3 a { color: inherit; text-decoration: none; }
+
+      .when {
+        flex: none;
+        color: #6b727d;
+        font-size: 8.6pt;
+        font-weight: 500;
+      }
+
+      ul { margin: 2px 0 0; padding-left: 14px; }
+
+      li { margin: 1.5px 0; }
+
+      li::marker { color: #b35a12; }
+
+      .skills {
+        display: grid;
+        grid-template-columns: 0.95in 1fr;
+        gap: 2px 10px;
+        margin: 0;
+      }
+
+      .skills dt { font-weight: 700; }
+
+      .skills dd { margin: 0; color: #333a45; }
+
+      .bottom {
+        display: grid;
+        grid-template-columns: 1fr 2.1in;
+        gap: 22px;
+      }
+
+      .edu { margin: 0 0 6px; color: #333a45; }
+
+      .edu b { color: #1d2129; }
+
+      .nowrap { white-space: nowrap; }
+    </style>
+  </head>
+  <body>
+    <div class="page">
+      <header>
+        <div>
+          <h1>Michael Montalbano</h1>
+          <p class="role">Principal Engineer · AI and computer vision, end to end</p>
+        </div>
+        <div class="contact">
+          New York, NY · +1-914-589-4003<br />
+          <a href="mailto:montabano1@gmail.com">montabano1@gmail.com</a><br />
+          <a href="https://www.michaelmontalbano.com">michaelmontalbano.com</a> ·
+          <a href="https://github.com/montabano1">github.com/montabano1</a><br />
+          <a href="https://www.linkedin.com/in/michael-montalbano-47832114/">linkedin.com/in/michael-montalbano-47832114</a>
+        </div>
+      </header>
+
+      <p class="summary">
+        I take systems from an ambiguous problem to production: hardware at customer sites, the
+        models that run on it, and the product people use. I build with fleets of AI coding
+        agents behind hard verification gates, and I report measurements honestly &mdash;
+        including the ones that went down.
+      </p>
+
+      <h2>Experience</h2>
+      <div class="item">
+        <div class="item-head">
+          <h3>Principal Engineer <span>· Capital One</span></h3>
+          <span class="when">Apr 2025 – Present</span>
+        </div>
+        <ul>
+          <li>Lead the Account Opening iOS engineering team. &ldquo;Top Dog&rdquo; award for championing AI and collaboration across engineering.</li>
+        </ul>
+      </div>
+      <div class="item">
+        <div class="item-head">
+          <h3>E5 Software Engineer, Full Stack <span>· Meta</span></h3>
+          <span class="when">Mar 2020 – Dec 2024</span>
+        </div>
+        <ul>
+          <li>Built and shipped the Orion AR glasses prototype in C++, Kotlin, and React Native.</li>
+          <li>Integrated Ray-Ban Meta glasses, smart glasses, and smartwatches with Meta&rsquo;s iOS apps for peer-to-peer video calling (React, Objective-C, C++); led the Instagram iOS smartwatch team.</li>
+        </ul>
+      </div>
+      <div class="item">
+        <div class="item-head">
+          <h3>Senior iOS Developer / Project Manager <span>· EarthCam</span></h3>
+          <span class="when">2019 – 2020</span>
+        </div>
+        <ul>
+          <li>Oversaw four live-production iOS apps in Swift and Objective-C; cut crash frequency from 4.8% to 0.7% of users.</li>
+        </ul>
+      </div>
+      <div class="item">
+        <div class="item-head">
+          <h3>Math Professor <span>· University of Bridgeport</span></h3>
+          <span class="when">2011 – 2018</span>
+        </div>
+        <ul>
+          <li>Designed a placement exam and algorithm that cut initial math-class dropouts by 17%; taught differential equations and multivariable calculus.</li>
+        </ul>
+      </div>
+
+      <h2>Products I build</h2>
+      <div class="item">
+        <div class="item-head">
+          <h3><a href="https://www.paddlescreens.com">PaddleScreens</a> <span>· founder and sole engineer · paddlescreens.com</span></h3>
+          <span class="when">2025 – Present</span>
+        </div>
+        <ul>
+          <li>Court cameras and computer vision for platform tennis at 8 clubs, 900+ match videos: members scan a QR code, play, and get a tracked, analyzed match. Next.js web, Expo mobile, live streaming.</li>
+          <li>Wrote the recorder that runs on each Axis camera (C, ACAP) &mdash; outbound-only, behind club routers; cutovers refuse to start until every camera checks in and roll back with one flag.</li>
+          <li>Vision pipeline: ball tracking (F1 .928 at precision .970), pose, court keypoints, and dual-view 3D flight solving for line calls; moving event detection into 3D added 24&ndash;57 points of recall with no new labels.</li>
+        </ul>
+      </div>
+      <div class="item">
+        <div class="item-head">
+          <h3><a href="https://beleeg.com">Beleeg</a> <span>· creator · beleeg.com</span></h3>
+          <span class="when">2026</span>
+        </div>
+        <ul>
+          <li>League software (web + mobile) whose Claude copilot takes 43 real actions, each prepared, previewed, and applied only after a person confirms &mdash; also exposed as an MCP server under the same rules.</li>
+          <li>Default-deny multi-tenant Postgres, Stripe Connect, a live league migrated in; 832 commits in four months, 400+ Playwright tests, 300+ assertions on the write protocol.</li>
+        </ul>
+      </div>
+      <div class="item">
+        <div class="item-head">
+          <h3><a href="https://www.recruitplan.com">RecruitPlan</a> <span>· co-builder · recruitplan.com</span></h3>
+          <span class="when">2025 – Present</span>
+        </div>
+        <ul>
+          <li>Built the college lacrosse placement model: a calibrated gradient-boosted classifier on ~34,000 real commitments, replacing a formula that claimed 99% confidence but was right 54&ndash;57% of the time (the new one states 62&ndash;72%, hits 64&ndash;75%).</li>
+          <li>Built most of the daily scraping pipelines behind 588 college programs and 62,000 roster players, and the Stripe billing.</li>
+        </ul>
+      </div>
+      <div class="item">
+        <div class="item-head">
+          <h3><a href="https://tutoriusmath.com">Tutorius Math</a> <span>· creator · iOS</span></h3>
+          <span class="when">2020 – 2023</span>
+        </div>
+        <ul>
+          <li>SAT and ACT math prep app: 10,000+ downloads in its first year, rated 4.8 on the App Store; custom inline LaTeX rendering, adaptive topic ranking, Firebase and Stripe subscriptions.</li>
+        </ul>
+      </div>
+
+      <div class="bottom">
+        <div>
+          <h2>Skills</h2>
+          <dl class="skills">
+            <dt>Languages</dt>
+            <dd>TypeScript, Python, Swift, C++, C, Kotlin, Objective-C, SQL</dd>
+            <dt>AI and ML</dt>
+            <dd>LLM agents and tool use (Claude), MCP, computer vision, TensorRT, calibrated models, evaluation design</dd>
+            <dt>Product stack</dt>
+            <dd>React, Next.js, React Native / Expo, Node, Postgres / Supabase, Firebase, GCP, AWS, Stripe</dd>
+            <dt>Hardware</dt>
+            <dd>Axis cameras (ACAP), edge video, live streaming (RTMP, SRT)</dd>
+          </dl>
+        </div>
+        <div>
+          <h2>Education</h2>
+          <p class="edu"><b>Bachelor&rsquo;s in Mathematics</b><br />Carnegie Mellon University, <span class="nowrap">2004 &ndash; 2008</span></p>
+          <p class="edu"><b>Master&rsquo;s in Math Education</b><br />Columbia University, <span class="nowrap">2009 &ndash; 2010</span></p>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

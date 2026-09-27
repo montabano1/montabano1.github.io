@@ -125,10 +125,11 @@ export function Interface({
           </em>
         </h1>
         <p className="hero-intro">
-          I take systems from ambiguous problem to production — court cameras and the vision
-          models that call the lines, an AI copilot that runs sports leagues but asks before
-          it acts, and a recruiting model honest about its own confidence. Principal Engineer
-          at Capital One; previously shipped Orion AR glasses at Meta.
+          I take systems from ambiguous problem to production —{' '}
+          <a href="#work-paddlescreens">court cameras and the vision models that call the lines</a>,{' '}
+          <a href="#work-beleeg">an AI copilot that runs sports leagues but asks before it acts</a>,
+          and <a href="#work-recruitplan">a recruiting model honest about its own confidence</a>.
+          Principal Engineer at Capital One; previously shipped Orion AR glasses at Meta.
         </p>
         <a className="resume-button" href="/resume.pdf" target="_blank" rel="noreferrer">
           <span className="resume-document" aria-hidden="true"><i /><i /><i /></span>
