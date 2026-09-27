@@ -116,6 +116,13 @@ export function Interface({
         className="hero-copy"
         aria-hidden={selectedCategory ? 'true' : undefined}
       >
+        <a
+          className="availability"
+          href="mailto:montabano1@gmail.com?subject=Forward-deployed%20engineering%20role"
+        >
+          <i aria-hidden="true" />
+          Open to forward-deployed engineering roles
+        </a>
         <p className="hero-kicker">Michael Montalbano · Principal engineer</p>
         <HelixBadge />
         <h1 aria-label="This is what I’m made of.">

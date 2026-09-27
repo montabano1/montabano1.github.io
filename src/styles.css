@@ -2021,3 +2021,74 @@ a:focus-visible {
   color: #ffffff;
   text-decoration-color: #c3bbff;
 }
+
+/* Availability — the first thing a recruiter should see */
+.availability {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  margin: 0 0 18px 2px;
+  padding: 7px 13px 7px 11px;
+  border: 1px solid rgba(167, 217, 87, 0.38);
+  border-radius: 999px;
+  color: #dff0c4;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  text-decoration: none;
+  background: rgba(167, 217, 87, 0.08);
+  pointer-events: auto;
+  transition: border-color 200ms ease, background 200ms ease, transform 200ms var(--ease-out);
+}
+
+.availability:hover {
+  border-color: rgba(167, 217, 87, 0.75);
+  background: rgba(167, 217, 87, 0.14);
+  transform: translateY(-1px);
+}
+
+.availability i {
+  position: relative;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #a7d957;
+}
+
+.availability i::after {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: #a7d957;
+  content: '';
+  animation: availability-ping 2s ease-out infinite;
+}
+
+@keyframes availability-ping {
+  from { opacity: 0.7; transform: scale(1); }
+  to { opacity: 0; transform: scale(2.8); }
+}
+
+@media (max-width: 640px) {
+  .availability {
+    margin-bottom: 12px;
+    padding: 6px 11px 6px 9px;
+    font-size: 9.5px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .availability i::after { animation: none; }
+}
+
+/* The availability pill adds a line above the headline; on shorter desktop
+   screens, reclaim that height so the hero never crowds the explore cards. */
+@media (max-height: 880px) and (min-width: 641px) {
+  .availability { margin-bottom: 11px; padding-block: 6px; }
+  .hero-copy { top: clamp(44px, 7vh, 88px); }
+  .hero-copy h1 { font-size: clamp(42px, 4.9vw, 74px); }
+}
+
+@media (max-height: 720px) and (min-width: 641px) {
+  .hero-copy { top: clamp(30px, 5vh, 56px); }
+}
