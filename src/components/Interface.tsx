@@ -135,7 +135,7 @@ export function Interface({
           I take systems from ambiguous problem to production —{' '}
           <a href="#work-paddlescreens">court cameras and the vision models that call the lines</a>,{' '}
           <a href="#work-beleeg">an AI copilot that runs sports leagues but asks before it acts</a>,
-          and <a href="#work-recruitplan">a recruiting model honest about its own confidence</a>.
+          and <a href="#work-recruitplan">the recruiting model a top girls’ lacrosse club runs on</a>.
           Principal Engineer at Capital One; previously shipped Orion AR glasses at Meta.
         </p>
         <a className="resume-button" href="/resume.pdf" target="_blank" rel="noreferrer">

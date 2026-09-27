@@ -14,7 +14,7 @@ export type FigureKind =
   | 'strands'
   | 'signal'
   | 'bracket'
-  | 'calibration'
+  | 'tiers'
   | 'route'
 
 type FigureProps = {
@@ -632,29 +632,41 @@ function BracketFigure({ reducedMotion }: { reducedMotion: boolean }) {
   )
 }
 
-/* ---------------------------------------------------------- calibration */
+/* ---------------------------------------------------------------- tiers */
 
-function CalibrationFigure() {
-  const px = (value: number) => 70 + ((value - 40) / 60) * 420
-  const py = (value: number) => 104 - ((value - 40) / 60) * 92
+// An athlete's predicted placement: a probability for each of 12 college
+// tiers, with the most likely three-tier band and the median called out.
+const TIER_ODDS = [0.02, 0.05, 0.1, 0.19, 0.24, 0.18, 0.1, 0.06, 0.03, 0.015, 0.01, 0.005]
+
+function TiersFigure() {
+  const left = 44
+  const step = 37
+  const base = 96
+  const scale = 250
   return (
-    <Frame label="Calibration plot: the old formula claimed 99% confidence but was right about 55% of the time; the new model's stated confidence matches its measured hit rate">
-      <path className="fig-axis" d={`M${px(40)} ${py(40)}H${px(100)}M${px(40)} ${py(40)}V${py(100)}`} />
-      <path className="fig-diag" d={`M${px(40)} ${py(40)}L${px(100)} ${py(100)}`} pathLength={1} />
-      <text className="fig-caption" x={px(100)} y="119" textAnchor="end">stated confidence →</text>
-      <text className="fig-caption" x={px(93)} y={py(97)} textAnchor="end">claims match reality</text>
-      <text className="fig-caption" x="12" y={py(97)}>hit rate</text>
-      <text className="fig-caption" x="12" y={py(88)}>(actual)</text>
-      <path className="fig-gap" d={`M${px(99)} ${py(55.5)}V${py(99)}`} pathLength={1} />
-      <circle className="fig-old" cx={px(99)} cy={py(55.5)} r="6" />
-      <text className="fig-caption fig-old-label" x={px(99) - 12} y={py(55.5) - 8} textAnchor="end">
-        old formula: says 99%, right 55%
-      </text>
-      <circle className="fig-new" cx={px(62)} cy={py(64)} r="6" />
-      <circle className="fig-new is-second" cx={px(72)} cy={py(75)} r="6" />
-      <text className="fig-caption fig-new-label" x={px(62) - 8} y={py(64) + 24}>
-        new model: says 62–72%, hits 64–75%
-      </text>
+    <Frame label="An athlete's predicted college placement: a probability for each of twelve tiers from top Division I to NAIA, with the most likely band highlighted">
+      <rect className="fig-band-tier" x={left + step * 3 - 5} y="10" width={step * 3} height={base - 6} rx="9" />
+      <text className="fig-caption fig-band-label" x={left + step * 4.5 - 5} y="24" textAnchor="middle">most likely band</text>
+      {TIER_ODDS.map((odds, index) => {
+        const height = odds * scale
+        const inBand = index >= 3 && index <= 5
+        return (
+          <rect
+            key={index}
+            className={`fig-tier ${inBand ? 'is-band' : ''} ${index === 4 ? 'is-median' : ''}`}
+            x={left + step * index}
+            y={base - height}
+            width={step - 10}
+            height={height}
+            rx="4"
+            style={{ animationDelay: `${0.9 + index * 0.06}s` }}
+          />
+        )
+      })}
+      <path className="fig-axis" d={`M${left - 6} ${base}H${left + step * 12 - 4}`} />
+      <text className="fig-caption" x={left} y="114">Top D1</text>
+      <text className="fig-caption" x={left + step * 12 - 10} y="114" textAnchor="end">NAIA</text>
+      <text className="fig-caption fig-median-label" x={left + step * 4 + 13} y="114" textAnchor="middle">median</text>
     </Frame>
   )
 }
@@ -713,8 +725,8 @@ export function PanelFigure({ kind, sequenceId, reducedMotion }: FigureProps) {
       return <SignalFigure />
     case 'bracket':
       return <BracketFigure reducedMotion={reducedMotion} />
-    case 'calibration':
-      return <CalibrationFigure />
+    case 'tiers':
+      return <TiersFigure />
     case 'route':
       return <RouteFigure />
   }

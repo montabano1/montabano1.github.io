@@ -248,12 +248,11 @@
             </p>
           </div>
           <div class="field-card">
-            <h3>Monitoring written from incidents</h3>
+            <h3>Failures surface in minutes</h3>
             <p>
-              A club&rsquo;s recordings once failed silently for two days, until a member noticed;
-              nine recorders were offline for a month before anyone checked. Now a scheduled check
-              pushes an alert within half an hour, once per incident, and live streams are watched
-              minute by minute.
+              A scheduled check pushes an alert within half an hour of a failed recording or an
+              offline recorder &mdash; once per incident, re-armed when it recovers &mdash; and
+              live streams are watched minute by minute, with a fleet-wide ping every ten.
             </p>
           </div>
           <div class="field-card">
@@ -441,10 +440,10 @@
 
       <section>
         <div class="section-head"><span>06</span></div>
-        <h2>Honest numbers</h2>
+        <h2>By the numbers</h2>
         <p class="prose">
-          Sports-CV demos are easy to fake and production is unforgiving, so the program is run
-          on measurements — and the measurements are attacked before they're believed:
+          Sports-CV demos are easy to fake and production is unforgiving, so every claim here is
+          measured on real footage from the installed cameras:
         </p>
         <div class="bars">
           <div class="bar-card">
@@ -479,10 +478,8 @@
         <div class="honest">
           <ul>
             <li>
-              <b>The most defensible headline: .785 F1</b> for whole-video event detection on a
-              held-out match, scored with no silencing whatsoever. The most interesting document
-              in the repo is the self-audit that <b>lowered</b> its own previously published
-              headline after finding the metric had been quietly forgiven 39% of the footage.
+              <b>.785 F1 for whole-video event detection</b> on a held-out match the models never
+              saw, scored across every frame of the recording.
             </li>
             <li>
               <b>Geometry beat the model.</b> Moving event detection from single-view 2D to
@@ -490,20 +487,14 @@
               with zero additional training labels.
             </li>
             <li>
-              <b>Every metric gets tested on a known-wrong change.</b> That rule exists because a
-              pixel-perfect 1.19&nbsp;px court fit once placed the camera 12.7&nbsp;ft
-              <i>below</i> the deck — while the reprojection metrics all still read healthy.
+              <b>Trust is earned per run:</b> every metric is proven against a deliberately broken
+              input before it&rsquo;s relied on, and every production run emits a certificate that
+              refuses to ship events if any pipeline stage is degraded.
             </li>
             <li>
               <b>Scale:</b> 34,644 hand-labeled ball frames across 139 matches, ~2,700
               hand-corrected event labels across 13 clips, 7+ venues in summer and winter light,
               and 85+ written experiment reports behind the shipped choices.
-            </li>
-            <li>
-              <b>The open gaps are written down too:</b> automatic rally segmentation is the real
-              remaining gap, and a degraded input stage can look like a perfectly normal match —
-              which is why every run now emits a certificate that refuses to ship events when a
-              stage is broken.
             </li>
           </ul>
         </div>

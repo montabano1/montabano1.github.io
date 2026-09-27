@@ -22,7 +22,7 @@ const helix = await site.screenshot({ clip: { x: 40, y: 0, width: 520, height: 9
 const projects = [
   ['PaddleScreens', 'court cameras and vision models at 8 clubs'],
   ['Beleeg', 'an AI league copilot that asks before it acts'],
-  ['RecruitPlan', 'a recruiting model honest about its confidence'],
+  ['RecruitPlan', 'the recruiting model a top lacrosse club runs on'],
   ['Tutorius Math', '10,000+ first-year downloads on iOS'],
 ]
 

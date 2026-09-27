@@ -144,15 +144,15 @@ export const sequences: Sequence[] = [
     title: 'RecruitPlan',
     color: category('work').color,
     glow: category('work').glow,
-    figure: 'calibration',
-    intro: 'College lacrosse recruiting, built on real commitment data',
+    figure: 'tiers',
+    intro: 'College lacrosse recruiting, powered by real commitment data',
     detail:
-      'Co-built with RecruitPlan’s founder. I built the prediction model — a calibrated classifier trained on about 34,000 real commitments that places an athlete on a 12-tier D1-to-NAIA scale. It replaced a formula that claimed 99% confidence and was right 54–57% of the time; the new one says 62–72% and hits 64–75%. I also built the daily scrapers behind 588 college pages, and the billing.',
-    tags: ['Calibrated ML', 'Data pipelines', 'Full stack'],
+      'RecruitPlan tells a high-school lacrosse player where they fit in college, and Laxachusetts — one of the top girls’ club programs in the country — runs its recruiting on it. I built the engine behind that answer: a machine-learning model trained on about 34,000 real commitments that places each athlete across 12 tiers, from top Division I to NAIA, with a probability for every tier. I also built the pipelines that refresh 588 college programs and 62,000 roster players every day, and the billing. Co-built with RecruitPlan’s founder.',
+    tags: ['Machine learning', 'Data pipelines', 'Club clients'],
     stats: [
       { value: '34k', label: 'Commitments modeled' },
       { value: '588', label: 'College programs' },
-      { value: '62k', label: 'Roster players scraped' },
+      { value: '62k', label: 'Roster players, refreshed daily' },
     ],
     action: {
       label: 'Visit recruitplan.com',
@@ -191,7 +191,7 @@ export const sequences: Sequence[] = [
     figure: 'route',
     intro: 'Where the software meets the customer',
     detail:
-      'PaddleScreens runs at eight clubs with no IT staff, where every camera upgrade is a site visit — so cutovers refuse to start until every camera checks in, and roll back with one flag. Beleeg’s first real league was migrated in from its old app, and its organizer’s feedback became the backlog. RecruitPlan’s club features were shaped around a live club pilot.',
+      'PaddleScreens runs at eight clubs with no IT staff, where every camera upgrade is a site visit — so cutovers refuse to start until every camera checks in, and roll back with one flag. Beleeg’s first real league was migrated in from its old app, and its organizer’s feedback became the backlog. RecruitPlan’s club tools were built alongside Laxachusetts, one of the top girls’ lacrosse programs in the country.',
     tags: ['On-site deployment', 'Data migration', 'Customer feedback'],
   },
   {
