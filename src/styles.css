@@ -1913,3 +1913,58 @@ a:focus-visible {
   animation: rung-snap 500ms var(--ease-out) both;
 }
 @keyframes rung-snap { from { transform: scaleX(0); opacity: 0; } }
+
+/* Hero copy steps back while a panel is open. */
+.hero-copy {
+  transition: opacity 600ms var(--ease-out), transform 600ms var(--ease-out);
+}
+
+.has-selection .hero-copy {
+  opacity: 0.12;
+  transform: translateX(28px);
+}
+
+/* A panel unfolds out of its connector once the connector has flown into
+   place, and vanishes fast on close so the connector can fly home. */
+.sequence-panel {
+  animation: panel-reveal 820ms 560ms var(--ease-out) both;
+}
+
+.sequence-panel.is-exiting {
+  animation: panel-exit 160ms ease-out forwards;
+}
+
+@keyframes panel-reveal {
+  from {
+    opacity: 0;
+    transform: translateX(-28px);
+    clip-path: inset(0% 62% 92% 0 round 999px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+    clip-path: inset(0% 0% 0% 0 round 0px);
+  }
+}
+
+@keyframes panel-exit {
+  from {
+    opacity: 1;
+    transform: none;
+  }
+  to {
+    opacity: 0;
+    transform: scale(0.985);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-copy {
+    transition: none;
+  }
+
+  .sequence-panel,
+  .sequence-panel.is-exiting {
+    animation: none;
+  }
+}

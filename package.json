@@ -22,7 +22,6 @@
   },
   "homepage": "https://github.com/montabano1/montabano1.github.io#readme",
   "dependencies": {
-    "motion": "^13.1.0",
     "postprocessing": "^6.39.4",
     "react": "^19.2.8",
     "react-dom": "^19.2.8",

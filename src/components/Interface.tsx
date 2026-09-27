@@ -1,4 +1,3 @@
-import { motion } from 'motion/react'
 import type { CSSProperties } from 'react'
 import { sequences, type Category, type CategoryId } from '../data/resume'
 
@@ -97,7 +96,6 @@ type InterfaceProps = {
   selectedCategory: CategoryId | null
   hoveredCategory: CategoryId | null
   loaded: boolean
-  reducedMotion: boolean
   onSelect: (id: CategoryId) => void
 }
 
@@ -106,7 +104,6 @@ export function Interface({
   selectedCategory,
   hoveredCategory,
   loaded,
-  reducedMotion,
   onSelect,
 }: InterfaceProps) {
   return (
@@ -115,10 +112,8 @@ export function Interface({
       inert={selectedCategory ? true : undefined}
       aria-hidden={selectedCategory ? true : undefined}
     >
-      <motion.main
+      <main
         className="hero-copy"
-        animate={{ opacity: selectedCategory ? 0.12 : 1, x: selectedCategory ? 28 : 0 }}
-        transition={{ duration: reducedMotion ? 0 : 0.6, ease: [0.16, 1, 0.3, 1] }}
         aria-hidden={selectedCategory ? 'true' : undefined}
       >
         <p className="hero-kicker">Michael Montalbano · Principal engineer</p>
@@ -156,7 +151,7 @@ export function Interface({
           </a>
           <a href="mailto:montabano1@gmail.com">Email <span aria-hidden="true">↗</span></a>
         </nav>
-      </motion.main>
+      </main>
 
       <nav className="sequence-nav" aria-label="Explore résumé sequences">
         <p className="nav-label">Take a spin through what I’m made of</p>

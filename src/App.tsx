@@ -1,6 +1,6 @@
-import { useReducedMotion } from 'motion/react'
 import { lazy, Suspense, type CSSProperties, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { HelixPlaceholder } from './components/HelixPlaceholder'
+import { useReducedMotion } from './hooks/useReducedMotion'
 import { Interface } from './components/Interface'
 import { SequencePanel } from './components/SequencePanel'
 import { categories, sequences, type CategoryId, type SequenceId } from './data/resume'
@@ -37,7 +37,7 @@ function canRenderWebGL() {
 }
 
 export default function App() {
-  const reducedMotion = useReducedMotion() ?? false
+  const reducedMotion = useReducedMotion()
   const [selected, setSelected] = useState<SequenceId | null>(getHashSequence)
   const [hovered, setHovered] = useState<SequenceId | null>(null)
   const [loaded, setLoaded] = useState(false)
@@ -221,7 +221,6 @@ export default function App() {
           selectedCategory={activeSequence?.categoryId ?? transitionCategory}
           hoveredCategory={hoveredCategory}
           loaded={loaded}
-          reducedMotion={reducedMotion}
           onSelect={handleCategorySelect}
         />
       </div>
