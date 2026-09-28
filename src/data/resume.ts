@@ -124,9 +124,9 @@ export const sequences: Sequence[] = [
       'Everything an amateur sports league runs on — schedules, scoring, standings, brackets, payments, and messaging — on web and mobile. Its copilot, lebrAIn, turns a sentence into finished work: email a division, rain out a night, settle a disputed score, chase unpaid dues, roll over the season. Every action is one tap to confirm. Through its MCP server, Claude and Meta Muse can run a league too — Beleeg was among the first apps submitted to Muse, the day after Meta opened it to outside connectors.',
     tags: ['AI agents', 'MCP', 'Meta Muse'],
     stats: [
-      { value: 'XXX', label: 'Leagues on Beleeg' },
-      { value: 'XXX', label: 'Players' },
-      { value: 'XXX', label: 'Hours saved by lebrAIn' },
+      { value: '43', label: 'Actions lebrAIn can take' },
+      { value: '21', label: 'Live questions it answers' },
+      { value: '33', label: 'Sport templates' },
     ],
     action: {
       label: 'Read the case study',
