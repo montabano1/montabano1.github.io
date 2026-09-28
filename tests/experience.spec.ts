@@ -54,7 +54,7 @@ test('serves the PaddleScreens case study', async ({ page }) => {
     'href',
     'https://www.paddlescreens.com/demo',
   )
-  await expect(page.getByRole('img', { name: /simulated rally/i })).toBeVisible()
+  await expect(page.getByRole('img', { name: /Real tracking from the match/i })).toBeVisible()
   await expect(page.getByRole('img', { name: /solved challenge/i })).toBeVisible()
 })
 
