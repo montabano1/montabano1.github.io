@@ -1,6 +1,7 @@
 import { lazy, Suspense, type CSSProperties, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { HelixPlaceholder } from './components/HelixPlaceholder'
 import { useReducedMotion } from './hooks/useReducedMotion'
+import { track } from './analytics'
 import { Interface } from './components/Interface'
 import { SequencePanel } from './components/SequencePanel'
 import { categories, sequences, type CategoryId, type SequenceId } from './data/resume'
@@ -72,6 +73,10 @@ export default function App() {
       ? `${window.location.pathname}${window.location.search}#${selected}`
       : `${window.location.pathname}${window.location.search}`
     window.history.replaceState(null, '', nextUrl)
+    if (selected) {
+      const sequence = sequences.find((item) => item.id === selected)
+      track('panel_open', { panel: selected, panel_title: sequence?.title ?? selected })
+    }
   }, [selected])
 
   const activeSequence = useMemo(

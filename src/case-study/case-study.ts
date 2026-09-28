@@ -4,6 +4,8 @@
  * and anything marked to animate in once it scrolls into view).
  */
 
+import { initAnalytics, track } from '../analytics'
+
 export const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
 
 const SVG_NS = 'http://www.w3.org/2000/svg'
@@ -30,6 +32,19 @@ function countUp(node: HTMLElement) {
 }
 
 export function initCaseStudy() {
+  initAnalytics()
+  const caseStudy = window.location.pathname.replace(/\//g, '') || 'unknown'
+  // "Read to the end": the closing call to action scrolled into view.
+  const finale = document.querySelector('.demo-banner')
+  if (finale) {
+    const reader = new IntersectionObserver(([entry]) => {
+      if (!entry.isIntersecting) return
+      reader.disconnect()
+      track('case_study_read', { case_study: caseStudy })
+    }, { threshold: 0.5 })
+    reader.observe(finale)
+  }
+
   const bar = document.querySelector<HTMLElement>('.top-bar')
   const rails = [...document.querySelectorAll<HTMLElement>('.pipeline')].map((pipeline) => ({
     rail: pipeline.querySelector<HTMLElement>('.rail'),

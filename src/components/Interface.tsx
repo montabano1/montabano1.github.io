@@ -138,7 +138,13 @@ export function Interface({
           and <a href="#work-recruitplan">the recruiting model a top girls’ lacrosse club runs on</a>.
           Principal Engineer at Capital One; previously shipped Orion AR glasses at Meta.
         </p>
-        <a className="resume-button" href="/resume.pdf" target="_blank" rel="noreferrer">
+        <a
+          className="resume-button"
+          href="/resume.pdf"
+          target="_blank"
+          rel="noreferrer"
+          data-analytics="Hero résumé button"
+        >
           <span className="resume-document" aria-hidden="true"><i /><i /><i /></span>
           <span>
             View résumé
