@@ -58,87 +58,123 @@ function Frame({ label, children }: { label: string; children: ReactNode }) {
 
 /* ---------------------------------------------------------------- court */
 
-type CourtPoint = { u: number; v: number; z: number }
-
-// A looping rally in court coordinates: u across (0–1), v depth (0 far, 1 near), z height.
-const RALLY: CourtPoint[] = [
-  { u: 0.3, v: 0.94, z: 0.34 },
-  { u: 0.66, v: 0.2, z: 0 },
-  { u: 0.72, v: 0.04, z: 0.3 },
-  { u: 0.34, v: 0.74, z: 0 },
-  { u: 0.24, v: 0.96, z: 0.28 },
-  { u: 0.58, v: 0.3, z: 0 },
-  { u: 0.46, v: 0.05, z: 0.36 },
-  { u: 0.78, v: 0.8, z: 0 },
-  { u: 0.3, v: 0.94, z: 0.34 },
-]
-const SEGMENT_SECONDS = 0.62
-
-function project(u: number, v: number, z = 0) {
-  const halfWidth = 96 + v * 118
-  const x = W / 2 + (u - 0.5) * 2 * halfWidth
-  const y = 22 + v * 86 - z * (56 + v * 34)
-  return { x, y }
+// The real tracking behind the case-study video (session msxA): the 3D ball
+// solve, physics events, and the four ReID-tracked players, in feet — x across
+// the 30 ft enclosure, y along its 60 ft, z up. Mirrored to match camera 2.
+type Rally = {
+  fps: number
+  duration: number
+  playerFps: number
+  ball: ([number, number, number] | null)[]
+  events: { t: number; type: string; pos: [number, number, number] }[]
+  players: ([number, number] | null)[][]
 }
 
-function courtLine(u0: number, v0: number, u1: number, v1: number) {
-  const a = project(u0, v0)
-  const b = project(u1, v1)
+let rallyRequest: Promise<Rally> | null = null
+const loadRally = () => (rallyRequest ??= fetch('/media/paddlescreens-rally.json').then((r) => r.json() as Promise<Rally>))
+
+function project(x: number, y: number, z = 0) {
+  const u = (30 - x) / 30
+  const v = 1 - y / 60
+  const half = 96 + v * 118
+  return { x: W / 2 + (u - 0.5) * 2 * half, y: 22 + v * 86 - z * (half / 15) * 0.4 }
+}
+
+function courtLine(x0: number, y0: number, x1: number, y1: number, z = 0) {
+  const a = project(x0, y0, z)
+  const b = project(x1, y1, z)
   return `M${a.x.toFixed(1)} ${a.y.toFixed(1)}L${b.x.toFixed(1)} ${b.y.toFixed(1)}`
 }
+
+const PLAYER_COLORS = ['#62e6d2', '#ffb15c', '#ff6474', '#a7d957']
 
 function CourtFigure({ reducedMotion }: { reducedMotion: boolean }) {
   const ball = useRef<SVGCircleElement>(null)
   const shadow = useRef<SVGEllipseElement>(null)
   const trail = useRef<SVGPolylineElement>(null)
   const ripple = useRef<SVGEllipseElement>(null)
-  const history = useRef<string[]>([])
-  const lastBounce = useRef(-1)
+  const players = useRef<(SVGCircleElement | null)[]>([])
+  const rally = useRef<Rally | null>(null)
+  const lastT = useRef(0)
+  const [, setLoaded] = useState(false)
+
+  useEffect(() => {
+    let alive = true
+    void loadRally().then((data) => {
+      if (!alive) return
+      rally.current = data
+      setLoaded(true)
+    })
+    return () => { alive = false }
+  }, [])
 
   useFrameLoop((seconds) => {
-    const total = (RALLY.length - 1) * SEGMENT_SECONDS
-    const time = seconds % total
-    const index = Math.min(Math.floor(time / SEGMENT_SECONDS), RALLY.length - 2)
-    const t = (time - index * SEGMENT_SECONDS) / SEGMENT_SECONDS
-    const from = RALLY[index]
-    const to = RALLY[index + 1]
-    const apex = to.z === 0 ? 0.42 : 0.2
-    const u = from.u + (to.u - from.u) * t
-    const v = from.v + (to.v - from.v) * t
-    const z = from.z * (1 - t) + to.z * t + 4 * apex * t * (1 - t)
-    const p = project(u, v, z)
-    const s = project(u, v, 0)
-    const radius = 2.6 + v * 2.2
-    ball.current?.setAttribute('cx', p.x.toFixed(1))
-    ball.current?.setAttribute('cy', p.y.toFixed(1))
-    ball.current?.setAttribute('r', radius.toFixed(2))
-    shadow.current?.setAttribute('cx', s.x.toFixed(1))
-    shadow.current?.setAttribute('cy', s.y.toFixed(1))
-    shadow.current?.setAttribute('rx', (radius * (1.3 - z * 0.8)).toFixed(2))
+    const data = rally.current
+    if (!data) return
+    const t = reducedMotion ? 1.4 : seconds % data.duration
+    const i = Math.floor(t * data.fps)
+    const f = t * data.fps - i
+    const a = data.ball[i]
+    const b = data.ball[i + 1] ?? a
+    const visible = Boolean(a)
+    ball.current?.setAttribute('opacity', visible ? '1' : '0')
+    shadow.current?.setAttribute('opacity', visible ? '1' : '0')
+    if (a && b) {
+      const x = a[0] + (b[0] - a[0]) * f
+      const y = a[1] + (b[1] - a[1]) * f
+      const z = a[2] + (b[2] - a[2]) * f
+      const p = project(x, y, z)
+      const g = project(x, y)
+      const radius = 2.2 + (1 - y / 60) * 2
+      ball.current?.setAttribute('cx', p.x.toFixed(1))
+      ball.current?.setAttribute('cy', p.y.toFixed(1))
+      ball.current?.setAttribute('r', radius.toFixed(2))
+      shadow.current?.setAttribute('cx', g.x.toFixed(1))
+      shadow.current?.setAttribute('cy', g.y.toFixed(1))
+      shadow.current?.setAttribute('rx', (radius * Math.max(0.5, 1.3 - z / 12)).toFixed(2))
+    }
+    // The last ~0.5 s of flight, broken at any gap in the track.
+    const points: string[] = []
+    for (let k = i; k > i - 15 && k >= 0; k -= 1) {
+      const sample = data.ball[k]
+      if (!sample) break
+      const p = project(sample[0], sample[1], sample[2])
+      points.push(`${p.x.toFixed(1)},${p.y.toFixed(1)}`)
+    }
+    trail.current?.setAttribute('points', points.join(' '))
 
-    history.current.push(`${p.x.toFixed(1)},${p.y.toFixed(1)}`)
-    if (history.current.length > 26) history.current.shift()
-    trail.current?.setAttribute('points', history.current.join(' '))
-
-    // Each segment that ends on the deck produces a bounce mark.
-    const bounceIndex = to.z === 0 && t > 0.97 ? index : -1
-    if (bounceIndex >= 0 && bounceIndex !== lastBounce.current && ripple.current) {
-      lastBounce.current = bounceIndex
-      const b = project(to.u, to.v)
-      ripple.current.setAttribute('cx', b.x.toFixed(1))
-      ripple.current.setAttribute('cy', b.y.toFixed(1))
+    // A ripple where each real bounce lands.
+    const bounce = data.events.find((event) => event.type === 'bounce' && event.t > lastT.current && event.t <= t)
+    lastT.current = t
+    if (bounce && ripple.current) {
+      const p = project(bounce.pos[0], bounce.pos[1])
+      ripple.current.setAttribute('cx', p.x.toFixed(1))
+      ripple.current.setAttribute('cy', p.y.toFixed(1))
       ripple.current.classList.remove('is-bouncing')
       void ripple.current.getBoundingClientRect()
       ripple.current.classList.add('is-bouncing')
     }
-  }, !reducedMotion)
 
-  const outline = [project(0, 0), project(1, 0), project(1, 1), project(0, 1)]
-  const cameraFar = project(0.5, -0.12)
+    const pi = Math.floor(t * data.playerFps)
+    const pf = t * data.playerFps - pi
+    const row = data.players[pi]
+    const next = data.players[pi + 1] ?? row
+    row?.forEach((spot, index) => {
+      const node = players.current[index]
+      if (!spot || !node) return
+      const to = next?.[index] ?? spot
+      const p = project(spot[0] + (to[0] - spot[0]) * pf, spot[1] + (to[1] - spot[1]) * pf)
+      node.setAttribute('cx', p.x.toFixed(1))
+      node.setAttribute('cy', (p.y - 3).toFixed(1))
+    })
+  }, true)
+
+  const deck = [project(0, 60), project(30, 60), project(30, 0), project(0, 0)]
+  const cameraFar = project(15, 62)
   const cameraNear = { x: W / 2, y: H - 4 }
 
   return (
-    <Frame label="A rally simulated in 3D: two cameras watch the court while the ball's flight and bounces are tracked">
+    <Frame label="The real tracking from a PaddleScreens match: both cameras, the ball's 3D flight and bounces, and four tracked players">
       <defs>
         <linearGradient id="cone-far" x1="0" y1="0" x2="0" y2="1">
           <stop offset="0" stopColor="currentColor" stopOpacity="0.28" />
@@ -149,35 +185,17 @@ function CourtFigure({ reducedMotion }: { reducedMotion: boolean }) {
           <stop offset="1" stopColor="currentColor" stopOpacity="0" />
         </linearGradient>
       </defs>
-      <path
-        className="fig-cone"
-        d={`M${cameraFar.x} ${cameraFar.y}L${project(0.02, 0.62).x} ${project(0.02, 0.62).y}L${project(0.98, 0.62).x} ${project(0.98, 0.62).y}Z`}
-        fill="url(#cone-far)"
-      />
-      <path
-        className="fig-cone is-delayed"
-        d={`M${cameraNear.x} ${cameraNear.y}L${project(0.04, 0.3).x} ${project(0.04, 0.3).y}L${project(0.96, 0.3).x} ${project(0.96, 0.3).y}Z`}
-        fill="url(#cone-near)"
-      />
-      <polygon
-        points={outline.map((point) => `${point.x},${point.y}`).join(' ')}
-        className="fig-court"
-      />
-      <path
-        className="fig-court-lines"
-        d={[
-          courtLine(0, 0.5, 1, 0.5),
-          courtLine(0.5, 0.2, 0.5, 0.8),
-          courtLine(0.1, 0.2, 0.9, 0.2),
-          courtLine(0.1, 0.8, 0.9, 0.8),
-          courtLine(0.1, 0, 0.1, 1),
-          courtLine(0.9, 0, 0.9, 1),
-        ].join('')}
-      />
-      <path className="fig-net" d={courtLine(-0.04, 0.5, 1.04, 0.5)} />
+      <path className="fig-cone" d={`M${cameraFar.x} ${cameraFar.y}L${project(0.5, 20).x} ${project(0.5, 20).y}L${project(29.5, 20).x} ${project(29.5, 20).y}Z`} fill="url(#cone-far)" />
+      <path className="fig-cone is-delayed" d={`M${cameraNear.x} ${cameraNear.y}L${project(1, 42).x} ${project(1, 42).y}L${project(29, 42).x} ${project(29, 42).y}Z`} fill="url(#cone-near)" />
+      <polygon points={deck.map((point) => `${point.x},${point.y}`).join(' ')} className="fig-court" />
+      <path className="fig-court-lines" d={[courtLine(5, 8, 25, 8), courtLine(25, 8, 25, 52), courtLine(25, 52, 5, 52), courtLine(5, 52, 5, 8)].join('')} />
+      <path className="fig-net" d={courtLine(4, 30, 26, 30, 3.08)} />
       <rect className="fig-camera" x={cameraFar.x - 7} y={cameraFar.y - 5} width="14" height="8" rx="2" />
       <rect className="fig-camera" x={cameraNear.x - 8} y={cameraNear.y - 6} width="16" height="9" rx="2" />
       <ellipse ref={ripple} className="fig-ripple" cx="-20" cy="-20" rx="9" ry="3.2" />
+      {PLAYER_COLORS.map((color, index) => (
+        <circle key={color} ref={(node) => { players.current[index] = node }} className="fig-player" r="3.4" cx="-20" cy="-20" stroke={color} />
+      ))}
       <polyline ref={trail} className="fig-trail" points="" />
       <ellipse ref={shadow} className="fig-shadow" cx="-20" cy="-20" rx="3" ry="1.2" />
       <circle ref={ball} className="fig-ball" cx="-20" cy="-20" r="3" />

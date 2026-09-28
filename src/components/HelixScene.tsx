@@ -136,6 +136,9 @@ export function HelixScene({
     rendererRef.current = renderer
     const observer = new ResizeObserver(() => renderer.resize())
     observer.observe(canvas)
+    // Web fonts can change the hero's height after first paint; the phone
+    // layout measures it, so re-measure once they have loaded.
+    void document.fonts?.ready.then(() => rendererRef.current === renderer && renderer.resize())
     return () => {
       observer.disconnect()
       renderer.dispose()

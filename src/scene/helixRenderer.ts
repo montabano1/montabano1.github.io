@@ -186,6 +186,8 @@ export class HelixRenderer {
   private readonly camera = new PerspectiveCamera(42, 1, 0.1, 60)
   private readonly helix = new Group()
   private readonly connectors: Connector[] = []
+  // Strands and sockets: faded out on phones while a panel is open.
+  private readonly frameMaterials: MeshPhysicalMaterial[] = []
   private readonly disposables: { dispose: () => void }[] = []
   private readonly timer = new Timer()
   private readonly pointer = new Vector2()
@@ -302,9 +304,11 @@ export class HelixRenderer {
     this.camera.updateProjectionMatrix()
 
     // Composition that depends on the viewport.
-    if (compact) this.helix.position.set(-0.08, height < 720 ? -1.2 : -1.0, -1.4)
-    else this.helix.position.set(-4.15, 0, 0)
-    this.helix.scale.setScalar(compact ? (height < 720 ? 0.5 : 0.58) : 1)
+    if (compact) this.placeInOpenSpace(width, height)
+    else {
+      this.helix.position.set(-4.15, 0, 0)
+      this.helix.scale.setScalar(1)
+    }
     this.helix.rotation.x = compact ? 0.04 : 0.08
     this.helix.rotation.z = compact ? 0 : -0.1
 
@@ -317,6 +321,29 @@ export class HelixRenderer {
     this.configurePostProcessing(compact)
     this.composer?.setSize(width, height)
     this.wake()
+  }
+
+  /**
+   * On phones the helix lives in the open space between the hero's links and
+   * the explore cards, on the right, so it never sits behind text. The gap is
+   * measured from the page itself, so it adapts to any phone height.
+   */
+  private placeInOpenSpace(width: number, height: number) {
+    const depth = 11.5 + 1.4 // resting camera distance + the helix's depth offset
+    const viewHeight = 2 * Math.tan(MathUtils.degToRad(this.camera.fov) / 2) * depth
+    const viewWidth = viewHeight * (width / height)
+    let top = 0.44
+    let bottom = 0.86
+    const links = document.querySelector('.hero-links')?.getBoundingClientRect()
+    const cards = document.querySelector('.nav-label')?.getBoundingClientRect()
+    if (links && cards && cards.top > links.bottom) {
+      top = links.bottom / height
+      bottom = cards.top / height
+    }
+    const gap = Math.max(bottom - top, 0.18)
+    const helixLength = (HELIX_POINTS - 1) * HELIX_STEP
+    this.helix.scale.setScalar(MathUtils.clamp((gap * viewHeight * 1.08) / helixLength, 0.24, 0.6))
+    this.helix.position.set(viewWidth * 0.23, (0.5 - (top + gap / 2)) * viewHeight, -1.4)
   }
 
   dispose() {
@@ -372,8 +399,12 @@ export class HelixRenderer {
           clearcoatRoughness,
           iridescence,
           iridescenceIOR: iridescence > 0.2 ? 1.35 : 1.3,
+          // Transparent at full opacity from the start, so fading later never
+          // swaps shader programs (and never stalls) mid-animation.
+          transparent: true,
         }),
       )
+      this.frameMaterials.push(material)
       this.helix.add(new Mesh(this.track(new TubeGeometry(curve, 180, 0.078, 12, false)), material))
     }
 
@@ -396,8 +427,10 @@ export class HelixRenderer {
           roughness: 0.36,
           metalness: 0.02,
           clearcoat: 0.25,
+          transparent: true,
         }),
       )
+      this.frameMaterials.push(material)
       const sockets = new InstancedMesh(socketGeometry, material, points.length)
       points.forEach((point, index) => sockets.setMatrixAt(index, matrix.makeTranslation(point)))
       sockets.frustumCulled = false
@@ -575,6 +608,15 @@ export class HelixRenderer {
     const targetHeight = viewHeight * (compact ? 0.88 : 0.6)
     const targetCenterX = compact ? width * 0.5 : width * 0.95 - panelWidth * 0.5
 
+    // On a phone an open panel covers the screen: let the rest of the helix
+    // fall away behind it so the panel reads cleanly.
+    const frameOpacity = compact && selected !== null ? 0.05 : 1
+    for (const material of this.frameMaterials) {
+      const before = material.opacity
+      material.opacity = MathUtils.damp(material.opacity, frameOpacity, reducedMotion ? 100 : 6, delta)
+      motion += Math.abs(material.opacity - before)
+    }
+
     helix.getWorldQuaternion(this.scratch.parentQuaternion)
     helix.getWorldScale(this.scratch.parentScale)
 
@@ -621,7 +663,7 @@ export class HelixRenderer {
         Math.abs(material.color.g - targetColor.g) +
         Math.abs(material.color.b - targetColor.b) +
         Math.abs(material.emissiveIntensity - targetEmissive)
-      material.opacity = MathUtils.damp(material.opacity, isMuted ? 0.16 : 1, reducedMotion ? 100 : 7, delta)
+      material.opacity = MathUtils.damp(material.opacity, isMuted ? (compact ? 0.04 : 0.16) : 1, reducedMotion ? 100 : 7, delta)
       motion +=
         Math.abs(inner.scale.x + inner.scale.y + outer.position.x + outer.position.y + outer.position.z - before) +
         (1 - Math.abs(inner.quaternion.dot(isSelected ? targetQuaternion : connector.quaternion))) +
