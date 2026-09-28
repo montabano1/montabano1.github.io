@@ -124,8 +124,8 @@
               payments, and messaging in one place. Its copilot, lebrAIn, turns a sentence into
               finished work: <strong>email a division, rain out a night, settle a disputed score,
               chase unpaid dues, roll over the season &mdash; 43 real actions, each ready to go
-              with one tap.</strong> Outside assistants like Claude can run a league through it
-              too. I built all of it.
+              with one tap.</strong> Through its MCP server, Claude and Meta Muse can run a league
+              too &mdash; Beleeg was among the first apps submitted to Muse. I built all of it.
             </p>
             <div class="cta-row">
               <a class="cta" href="https://beleeg.com" target="_blank" rel="noreferrer">
@@ -138,13 +138,13 @@
             <svg
               viewBox="0 0 560 420"
               role="img"
-              aria-label="Requests from the in-app copilot and from outside assistants over MCP pass through one action registry and a role check; each is prepared as a preview and waits for a person to confirm before anything is written to the database. A request from someone without the right role is refused."
+              aria-label="Requests from the in-app copilot and from outside assistants like Claude and Meta Muse over MCP pass through one action registry and a role check; each is prepared as a preview and waits for a person to confirm before anything is written to the database. A request from someone without the right role is refused."
             >
               <path class="wire" d="M100 58V86Q100 100 140 100H280M280 58V100M460 58V86Q460 100 420 100H280" />
               <path class="wire" d="M280 100V376" />
               <g class="chip"><rect x="20" y="24" width="160" height="34" rx="11" /><text x="100" y="45">lebrAIn, in the app</text></g>
               <g class="chip"><rect x="200" y="24" width="160" height="34" rx="11" /><text x="280" y="45">Claude over MCP</text></g>
-              <g class="chip"><rect x="380" y="24" width="160" height="34" rx="11" /><text x="460" y="45">Cursor over MCP</text></g>
+              <g class="chip"><rect x="380" y="24" width="160" height="34" rx="11" /><text x="460" y="45">Meta Muse over MCP</text></g>
               <g class="box"><rect x="130" y="112" width="300" height="40" rx="12" /><text x="280" y="131">One action registry</text><text class="sub" x="280" y="145">43 actions · 21 read-only lookups</text></g>
               <path class="role-bar" d="M150 184H262M298 184H410" />
               <text class="sub" x="280" y="176">role check</text>
@@ -330,17 +330,32 @@
 
       <section>
         <div class="section-head"><span>05</span></div>
-        <h2>The same rules for everyone else&rsquo;s AI</h2>
+        <h2>Run your league from Meta Muse, Claude, or Cursor</h2>
         <p class="prose">
-          Beleeg ships an MCP server, so an organizer can run the league from Claude, Cursor, or
-          any assistant that speaks the protocol. It is generated from the same registry as
-          lebrAIn &mdash; one prepare tool per action, one shared confirm tool &mdash; so an
-          outside model gets no path around the preview, the role check, or the person. It runs
-          over stdio or stateless streamable HTTP, and assistants authenticate with scoped tokens
-          that expire in thirty days.
+          Beleeg ships an MCP server, so an organizer can run the league from whichever assistant
+          they already use. When Meta opened <strong>Muse</strong> to third-party connectors on
+          September 18, 2026, Beleeg was submitted to Muse&rsquo;s directory the very next day
+          &mdash; <strong>among the first apps to apply</strong>. Two days later a real Muse
+          conversation created a league on Beleeg, start to finish.
         </p>
+        <div class="field-grid">
+          <div class="field-card">
+            <h3>Every action, in every assistant</h3>
+            <p>The server is generated from the same registry as lebrAIn: one tool per action, 43 in all, plus the lookups that answer questions about schedules, standings, and who&rsquo;s paid.</p>
+          </div>
+          <div class="field-card">
+            <h3>One tap still decides</h3>
+            <p>Outside assistants use the same prepare-and-confirm path, so Muse shows the organizer exactly what will happen &mdash; and asks &mdash; before it starts a league or sends a message.</p>
+          </div>
+          <div class="field-card">
+            <h3>Connect in a minute</h3>
+            <p>Hosted at beleeg.com/api/mcp over streamable HTTP, with scoped access tokens an organizer creates in settings and pastes into their assistant.</p>
+          </div>
+        </div>
+        <div class="cta-row">
+          <a class="cta ghost" href="https://beleeg.com/muse" target="_blank" rel="noreferrer">Beleeg for Meta Muse ↗</a>
+        </div>
       </section>
-
       <section>
         <div class="section-head"><span>06</span></div>
         <h2>Multi-tenant by default</h2>
