@@ -71,7 +71,7 @@ test('deep link opens the PaddleScreens panel with case-study links', async ({ p
     'href',
     'https://www.paddlescreens.com/demo',
   )
-  await expect(page.getByRole('img', { name: /rally simulated in 3D/i })).toBeVisible()
+  await expect(page.getByRole('img', { name: /real tracking from a PaddleScreens match/i })).toBeVisible()
 })
 
 test('serves the Beleeg case study and links it from its panel', async ({ page }) => {
