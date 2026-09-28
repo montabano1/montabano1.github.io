@@ -694,3 +694,19 @@ footer nav { display: flex; gap: 20px; }
   font-size: 13px;
   line-height: 1.75;
 }
+
+.rally .contact-hit { fill: none; stroke: #fff3c4; stroke-width: 1.6; }
+.rally .screen-hit { fill: none; stroke: #c3bbff; stroke-width: 1.6; }
+.rally .ball { transition: opacity 120ms linear; }
+
+.rally .contact-hit,
+.rally .screen-hit {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: hit-ring 700ms ease-out forwards;
+}
+
+@keyframes hit-ring {
+  from { opacity: 0.95; transform: scale(0.3); }
+  to { opacity: 0; transform: scale(1.3); }
+}

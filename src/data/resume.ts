@@ -119,14 +119,14 @@ export const sequences: Sequence[] = [
     color: category('work').color,
     glow: category('work').glow,
     figure: 'bracket',
-    intro: 'League software with an AI copilot that asks before it acts',
+    intro: 'League software with an AI copilot that does the work',
     detail:
-      'Everything an amateur sports league runs on — schedules, scoring, standings, brackets, payments, and messaging — on web and mobile. Its copilot, lebrAIn, can take 43 real actions, but every write is prepared, previewed, and applied only after a person confirms. The same action registry is exposed as an MCP server, so outside assistants run a league under the same rules.',
+      'Everything an amateur sports league runs on — schedules, scoring, standings, brackets, payments, and messaging — on web and mobile. Its copilot, lebrAIn, turns a sentence into finished work: email a division, rain out a night, settle a disputed score, chase unpaid dues, roll over the season. Every action is one tap to confirm, and outside assistants like Claude can run a league through the same actions over MCP.',
     tags: ['AI agents', 'MCP', 'Multi-tenant Postgres'],
     stats: [
-      { value: '43', label: 'Confirm-gated AI actions' },
-      { value: '400+', label: 'Playwright tests' },
-      { value: '832', label: 'Commits in four months' },
+      { value: '43', label: 'Actions lebrAIn can take' },
+      { value: '21', label: 'Live questions it answers' },
+      { value: '33', label: 'Sport templates' },
     ],
     action: {
       label: 'Read the case study',

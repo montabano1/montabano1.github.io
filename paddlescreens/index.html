@@ -77,7 +77,7 @@
             <svg
               viewBox="0 0 560 380"
               role="img"
-              aria-label="A simulated rally on a platform-tennis court: two cameras watch from each end while four tracked players trade shots and every bounce is marked"
+              aria-label="Real tracking from the match in the video below: the 3D ball track, bounces, screen hits, and four tracked players, replayed in sync with the video"
             >
               <defs>
                 <linearGradient id="cone-top" x1="0" y1="0" x2="0" y2="1">
@@ -95,7 +95,7 @@
               <polyline id="rally-trail" class="trail" points="" />
               <ellipse id="rally-shadow" class="shadow" cx="-20" cy="-20" rx="4" ry="1.6" />
               <circle id="rally-ball" class="ball" cx="-20" cy="-20" r="4" />
-              <text class="hud" x="12" y="372">trajectory event: <tspan id="rally-event" class="v">tracking</tspan></text>
+              <text class="hud" x="12" y="372">real tracking · <tspan id="rally-event" class="v">tracking</tspan></text>
             </svg>
           </figure>
         </div>
@@ -555,70 +555,40 @@
         el('circle', { class: 'grit', cx: ((a - Math.floor(a)) * 900).toFixed(1), cy: ((b - Math.floor(b)) * 290).toFixed(1), r: 0.9 + (i % 3) * 0.5 }, grit)
       }
 
-      /* Hero rally: a tiny 3D simulation projected onto the court */
+      /* Hero rally: the real tracking behind the overlay video below — the
+         dual-view 3D ball solve, physics events, and ReID player tracker for
+         the same 30 seconds — replayed in sync with the video when it plays.
+         World units are feet: x across the 30 ft enclosure, y along the
+         60 ft length (camera 2's end is y = 0), z up from the deck. */
       const W = 560
-      const project = (u, v, z = 0) => {
+      // Mirror x so the diagram faces the same way as the camera-2 video.
+      const project = (x, y, z = 0) => {
+        const u = (30 - x) / 30
+        const v = 1 - y / 60
         const half = 128 + v * 118
-        const lift = 64 + v * 44
-        return { x: W / 2 + (u - 0.5) * 2 * half, y: 78 + v * 250 - z * lift }
+        return { x: W / 2 + (u - 0.5) * 2 * half, y: 70 + v * 250 - z * (half / 15) * 0.72 }
       }
-      const pt = (u, v, z) => { const p = project(u, v, z); return `${p.x.toFixed(1)},${p.y.toFixed(1)}` }
+      const pt = (x, y, z) => { const p = project(x, y, z); return `${p.x.toFixed(1)},${p.y.toFixed(1)}` }
       const line = (a, b) => `M${pt(...a)}L${pt(...b)}`
       const staticLayer = document.getElementById('rally-static')
-      const farCam = project(0.5, -0.1, 1.05)
-      const nearCam = project(0.5, 1.06, 0.1)
-      el('path', { class: 'cone', fill: 'url(#cone-top)', d: `M${farCam.x} ${farCam.y}L${pt(0, 0.7)}L${pt(1, 0.7)}Z` }, staticLayer)
-      el('path', { class: 'cone b', fill: 'url(#cone-bottom)', d: `M${nearCam.x} ${nearCam.y}L${pt(0.02, 0.3)}L${pt(0.98, 0.3)}Z` }, staticLayer)
-      const cage = [[0, 0], [1, 0], [1, 1], [0, 1]]
+
+      // One camera behind each end, as calibrated. The near one is drawn at deck
+      // level just past the baseline; at its true height it would float mid-court.
+      const farCam = project(14.8, 61.1, 15.2)
+      const nearCam = (({ x, y }) => ({ x, y: y + 12 }))(project(14.9, -1.0, 0))
+      el('path', { class: 'cone', fill: 'url(#cone-top)', d: `M${farCam.x} ${farCam.y}L${pt(0, 18)}L${pt(30, 18)}Z` }, staticLayer)
+      el('path', { class: 'cone b', fill: 'url(#cone-bottom)', d: `M${nearCam.x} ${nearCam.y}L${pt(0.5, 42)}L${pt(29.5, 42)}Z` }, staticLayer)
+      const deck = [[0, 0], [30, 0], [30, 60], [0, 60]]
       el('path', {
         class: 'cage',
-        d: cage.map(([u, v]) => line([u, v, 0], [u, v, 0.9])).join('') +
-          `M${cage.map(([u, v]) => pt(u, v, 0.9)).join('L')}Z`,
+        d: deck.map(([x, y]) => line([x, y, 0], [x, y, 12])).join('') + `M${deck.map(([x, y]) => pt(x, y, 12)).join('L')}Z`,
       }, staticLayer)
-      el('polygon', { class: 'court', points: cage.map(([u, v]) => pt(u, v)).join(' ') }, staticLayer)
-      el('path', {
-        class: 'lines',
-        d: [
-          line([0.5, 0.18], [0.5, 0.82]),
-          line([0.08, 0.18], [0.92, 0.18]),
-          line([0.08, 0.82], [0.92, 0.82]),
-          line([0.08, 0], [0.08, 1]),
-          line([0.92, 0], [0.92, 1]),
-        ].join(''),
-      }, staticLayer)
-      el('path', { class: 'net', d: line([-0.03, 0.5, 0.12], [1.03, 0.5, 0.12]) }, staticLayer)
+      el('polygon', { class: 'court', points: deck.map(([x, y]) => pt(x, y)).join(' ') }, staticLayer)
+      el('polygon', { class: 'lines', points: [[5, 8], [25, 8], [25, 52], [5, 52]].map(([x, y]) => pt(x, y)).join(' ') }, staticLayer)
+      el('path', { class: 'net', d: line([4, 30, 3.08], [26, 30, 3.08]) + line([4, 30, 0], [4, 30, 3.08]) + line([26, 30, 0], [26, 30, 3.08]) }, staticLayer)
       for (const cam of [farCam, nearCam]) {
         el('rect', { class: 'cam', x: cam.x - 11, y: cam.y - 7, width: 22, height: 13, rx: 3 }, staticLayer)
         el('circle', { class: 'cam-lens', cx: cam.x + 6, cy: cam.y - 1, r: 2 }, staticLayer)
-      }
-
-      const players = [
-        { id: 'P1', color: '#62e6d2', u: 0.3, v: 0.9 },
-        { id: 'P2', color: '#ffb15c', u: 0.7, v: 0.86 },
-        { id: 'P3', color: '#ff6474', u: 0.32, v: 0.1 },
-        { id: 'P4', color: '#a7d957', u: 0.68, v: 0.13 },
-      ]
-      const playerLayer = document.getElementById('rally-players')
-      for (const player of players) {
-        player.home = { u: player.u, v: player.v }
-        player.node = el('g', { class: 'player' }, playerLayer)
-        el('circle', { r: 9, stroke: player.color }, player.node)
-        el('text', { y: 3.2, fill: player.color }, player.node).textContent = player.id
-      }
-
-      let seed = 7
-      const random = () => ((seed = (seed * 16807) % 2147483647) / 2147483647)
-      let hitter = 0
-      const nextSegment = (from) => {
-        const nearSide = players[hitter].v > 0.5
-        const receivers = nearSide ? [2, 3] : [0, 1]
-        const receiver = receivers[Math.floor(random() * 2)]
-        const bounce = { u: 0.18 + random() * 0.64, v: nearSide ? 0.08 + random() * 0.3 : 0.62 + random() * 0.3, z: 0 }
-        hitter = receiver
-        return [
-          { from, to: bounce, apex: 0.34 + random() * 0.18, event: 'bounce' },
-          { from: bounce, to: { u: bounce.u * 0.7 + players[receiver].home.u * 0.3, v: nearSide ? 0.04 : 0.96, z: 0.32 }, apex: 0.2, event: 'contact', receiver },
-        ]
       }
 
       const ball = document.getElementById('rally-ball')
@@ -626,76 +596,120 @@
       const trail = document.getElementById('rally-trail')
       const marks = document.getElementById('rally-marks')
       const eventLabel = document.getElementById('rally-event')
-      const history = []
-      let queue = nextSegment({ u: players[0].u, v: 0.96, z: 0.32 })
-      let segment = queue.shift()
-      let elapsed = 0
-      let running = true
-      let last = performance.now()
+      const playerLayer = document.getElementById('rally-players')
+      const video = document.querySelector('.video-frame video')
+      const COLORS = ['#62e6d2', '#ffb15c', '#ff6474', '#a7d957']
 
-      const drawPlayers = (target) => {
-        for (const [index, player] of players.entries()) {
-          const chasing = target && target.receiver === index
-          const goalU = chasing ? target.to.u : player.home.u
-          player.u += (goalU - player.u) * 0.04
-          const p = project(player.u, player.v)
-          player.node.setAttribute('transform', `translate(${p.x.toFixed(1)} ${(p.y - 10).toFixed(1)})`)
+      const data = await fetch('/media/paddlescreens-rally.json').then((response) => response.json())
+      const playerNodes = COLORS.map((color, index) => {
+        const node = el('g', { class: 'player' }, playerLayer)
+        el('circle', { r: 9, stroke: color }, node)
+        el('text', { y: 3.2, fill: color }, node).textContent = `P${index + 1}`
+        return node
+      })
+
+      const lerp = (a, b, f) => a + (b - a) * f
+      const ballAt = (t) => {
+        const i = Math.floor(t * data.fps)
+        const a = data.ball[i]
+        const b = data.ball[i + 1]
+        if (!a) return null
+        if (!b) return a
+        const f = t * data.fps - i
+        return [lerp(a[0], b[0], f), lerp(a[1], b[1], f), lerp(a[2], b[2], f)]
+      }
+      const playersAt = (t) => {
+        const i = Math.floor(t * data.playerFps)
+        const a = data.players[i]
+        const b = data.players[i + 1] ?? a
+        const f = t * data.playerFps - i
+        return a?.map((p, k) => (p && b?.[k] ? [lerp(p[0], b[k][0], f), lerp(p[1], b[k][1], f)] : p))
+      }
+
+      let nextEvent = 0
+      let lastT = -1
+      const resetMarks = () => { marks.replaceChildren(); nextEvent = 0 }
+      const fireEvent = (event) => {
+        eventLabel.textContent = event.label
+        const [x, y, z] = event.pos
+        if (event.type === 'bounce') {
+          const p = project(x, y)
+          const mark = el('ellipse', { class: 'mark', cx: p.x.toFixed(1), cy: p.y.toFixed(1), rx: 9, ry: 3.4 }, marks)
+          mark.style.transformBox = 'fill-box'
+          mark.style.transformOrigin = 'center'
+          mark.animate([{ opacity: 1, transform: 'scale(0.3)' }, { opacity: 0.4, transform: 'scale(1)' }], { duration: 600, fill: 'forwards', easing: 'cubic-bezier(0.16, 1, 0.3, 1)' })
+          if (marks.childNodes.length > 8) marks.firstChild.remove()
+        } else {
+          const p = project(x, y, z)
+          const ring = el('circle', { class: event.type === 'screen' ? 'screen-hit' : 'contact-hit', cx: p.x.toFixed(1), cy: p.y.toFixed(1), r: 12 }, marks)
+          setTimeout(() => ring.remove(), 720)
         }
       }
 
-      const step = (now) => {
-        const delta = Math.min((now - last) / 1000, 0.05)
-        last = now
-        elapsed += delta
-        const duration = segment.event === 'bounce' ? 0.78 : 0.42
-        let t = elapsed / duration
-        if (t >= 1) {
-          eventLabel.textContent = segment.event
-          if (segment.event === 'bounce') {
-            const b = project(segment.to.u, segment.to.v)
-            const mark = el('ellipse', { class: 'mark', cx: b.x, cy: b.y, rx: 9, ry: 3.4 }, marks)
-            mark.animate([{ opacity: 1, transform: 'scale(0.3)' }, { opacity: 0.35, transform: 'scale(1)' }], { duration: 600, fill: 'forwards', easing: 'cubic-bezier(0.16, 1, 0.3, 1)' })
-            mark.style.transformBox = 'fill-box'
-            mark.style.transformOrigin = 'center'
-            if (marks.childNodes.length > 7) marks.firstChild.remove()
-          }
-          elapsed = 0
-          t = 0
-          if (!queue.length) queue = nextSegment(segment.to)
-          segment = queue.shift()
+      const draw = (t) => {
+        if (t < lastT) resetMarks()
+        // After a seek, skip past events silently; only animate ones happening now.
+        const jumped = t - lastT > 0.5
+        lastT = t
+        while (nextEvent < data.events.length && data.events[nextEvent].t <= t) {
+          const event = data.events[nextEvent++]
+          if (!jumped || t - event.t < 0.3) fireEvent(event)
         }
-        const { from, to, apex } = segment
-        const u = from.u + (to.u - from.u) * t
-        const v = from.v + (to.v - from.v) * t
-        const z = from.z * (1 - t) + to.z * t + 4 * apex * t * (1 - t)
-        const p = project(u, v, z)
-        const g = project(u, v)
-        const radius = 3.2 + v * 2.6
-        ball.setAttribute('cx', p.x.toFixed(1))
-        ball.setAttribute('cy', p.y.toFixed(1))
-        ball.setAttribute('r', radius.toFixed(2))
-        shadow.setAttribute('cx', g.x.toFixed(1))
-        shadow.setAttribute('cy', g.y.toFixed(1))
-        shadow.setAttribute('rx', (radius * (1.4 - z)).toFixed(2))
-        history.push(`${p.x.toFixed(1)},${p.y.toFixed(1)}`)
-        if (history.length > 34) history.shift()
-        trail.setAttribute('points', history.join(' '))
-        drawPlayers(queue[0] ?? segment)
-        if (running) requestAnimationFrame(step)
+
+        const position = ballAt(t)
+        ball.style.opacity = shadow.style.opacity = position ? '1' : '0'
+        if (position) {
+          const [x, y, z] = position
+          const p = project(x, y, z)
+          const g = project(x, y)
+          const radius = 3 + (1 - y / 60) * 2.6
+          ball.setAttribute('cx', p.x.toFixed(1))
+          ball.setAttribute('cy', p.y.toFixed(1))
+          ball.setAttribute('r', radius.toFixed(2))
+          shadow.setAttribute('cx', g.x.toFixed(1))
+          shadow.setAttribute('cy', g.y.toFixed(1))
+          shadow.setAttribute('rx', (radius * Math.max(0.5, 1.4 - z / 12)).toFixed(2))
+        }
+        // The last ~0.6 s of measured flight, broken wherever the track has a gap.
+        const points = []
+        const end = Math.floor(t * data.fps)
+        for (let i = end; i > end - 18 && i >= 0; i -= 1) {
+          const sample = data.ball[i]
+          if (!sample) break
+          points.push(pt(...sample))
+        }
+        if (position) points.unshift(pt(...position))
+        trail.setAttribute('points', points.join(' '))
+
+        playersAt(t)?.forEach((spot, index) => {
+          if (!spot) return
+          const p = project(spot[0], spot[1])
+          playerNodes[index].setAttribute('transform', `translate(${p.x.toFixed(1)} ${(p.y - 10).toFixed(1)})`)
+        })
       }
 
       if (reduced) {
-        elapsed = 0.3
-        drawPlayers(null)
-        step(performance.now())
-        running = false
+        // One still moment: a contact in flight, with its players.
+        draw(1.4)
       } else {
+        // Follow the video's clock while it plays; otherwise keep our own.
+        let clock = 0
+        let last = performance.now()
+        let running = true
+        const frame = (now) => {
+          const delta = Math.min((now - last) / 1000, 0.1)
+          last = now
+          if (video && !video.paused && video.readyState >= 2) clock = video.currentTime
+          else clock = (clock + delta) % data.duration
+          draw(clock)
+          if (running) requestAnimationFrame(frame)
+        }
         new IntersectionObserver(([entry]) => {
-          const wasRunning = running
+          const was = running
           running = entry.isIntersecting
-          if (running && !wasRunning) { last = performance.now(); requestAnimationFrame(step) }
+          if (running && !was) { last = performance.now(); requestAnimationFrame(frame) }
         }).observe(document.querySelector('.rally'))
-        requestAnimationFrame(step)
+        requestAnimationFrame(frame)
       }
     </script>
   </body>
