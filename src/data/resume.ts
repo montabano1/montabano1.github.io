@@ -67,7 +67,7 @@ export const sequences: Sequence[] = [
     color: category('experience').color,
     glow: category('experience').glow,
     figure: 'timeline',
-    intro: 'E5 Software Engineer · Meta · 2020–2024',
+    intro: 'Software Engineer · Meta · 2020–2024',
     detail:
       'Built and shipped the Orion AR glasses prototype, integrated Ray-Ban Meta and other wearables with Meta’s iOS apps for peer-to-peer video calling, and led the Instagram iOS smartwatch team.',
     tags: ['AR & wearables', 'C++', 'React Native'],

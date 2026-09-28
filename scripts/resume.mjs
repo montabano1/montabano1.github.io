@@ -1,10 +1,12 @@
 // Renders resume/resume.html to public/resume.pdf (headless Chromium).
-//   node scripts/resume.mjs
+//   node scripts/resume.mjs [output.pdf] [source.html]
 import { chromium } from '@playwright/test'
 import { fileURLToPath } from 'node:url'
 
-const source = new URL('../resume/resume.html', import.meta.url)
-const output = fileURLToPath(new URL('../public/resume.pdf', import.meta.url))
+// Optional second argument renders a different source file (e.g. a design option).
+const source = process.argv[3] ? new URL(`file://${process.argv[3].startsWith('/') ? '' : process.cwd() + '/'}${process.argv[3]}`) : new URL('../resume/resume.html', import.meta.url)
+// Optional first argument writes elsewhere, e.g. a draft for review.
+const output = process.argv[2] ?? fileURLToPath(new URL('../public/resume.pdf', import.meta.url))
 
 const browser = await chromium.launch({ headless: true })
 const page = await browser.newPage()

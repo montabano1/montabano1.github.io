@@ -5,258 +5,349 @@
     <title>Michael Montalbano — Résumé</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link
-      href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Manrope:wght@400;500;600;700&display=block"
+      href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=block"
       rel="stylesheet"
     />
     <style>
       @page { size: Letter; margin: 0; }
-
       * { box-sizing: border-box; }
+
+      :root {
+        --ink: #0f172a;
+        --body: #334155;
+        --muted: #7a8699;
+        --accent: #4f46e5;
+        --accent-soft: #eef0ff;
+        --accent-line: #c9ccfb;
+        --card: #fbfbfe;
+        --line: #e2e6ee;
+      }
 
       body {
         margin: 0;
-        color: #1d2129;
-        font: 400 9pt/1.36 'Manrope', sans-serif;
+        color: var(--body);
+        font: 400 8.5pt/1.4 'Plus Jakarta Sans', sans-serif;
         -webkit-print-color-adjust: exact;
         print-color-adjust: exact;
       }
 
+      a { color: inherit; text-decoration: none; }
+      p { margin: 0; }
+      ul { margin: 0; padding-left: 11px; }
+      li { margin: 2px 0; }
+      li::marker { color: var(--accent); }
+
       .page {
         width: 8.5in;
         min-height: 11in;
-        padding: 0.42in 0.5in 0.36in;
+        padding: 0.36in 0.48in 0.24in;
       }
 
+      /* Header */
       header {
-        display: flex;
-        align-items: flex-end;
-        justify-content: space-between;
+        display: grid;
+        grid-template-columns: auto 1fr;
+        align-items: center;
         gap: 18px;
-        padding-bottom: 10px;
-        border-bottom: 1.5px solid #1d2129;
       }
-
+      .photo {
+        width: 0.9in;
+        height: 0.9in;
+        border-radius: 14px;
+        object-fit: cover;
+        border: 1px solid var(--line);
+      }
       h1 {
         margin: 0;
-        font: 600 23pt/1 'Fraunces', serif;
-        letter-spacing: -0.02em;
+        color: var(--ink);
+        font-size: 24pt;
+        font-weight: 800;
+        line-height: 1.05;
+        letter-spacing: -0.025em;
       }
-
       .role {
-        margin: 5px 0 0;
-        color: #b35a12;
+        margin: 3px 0 8px;
+        color: var(--accent);
         font-size: 10.5pt;
-        font-weight: 600;
-      }
-
-      .contact {
-        color: #4a515c;
-        font-size: 8.6pt;
-        line-height: 1.55;
-        text-align: right;
-      }
-
-      .contact a { color: inherit; text-decoration: none; }
-
-      .summary {
-        margin: 10px 0 0;
-        color: #333a45;
-        font-size: 9.6pt;
-        line-height: 1.5;
-      }
-
-      h2 {
-        margin: 11px 0 5px;
-        padding-bottom: 3px;
-        border-bottom: 1px solid #d8dbe0;
-        color: #b35a12;
-        font-size: 8.6pt;
         font-weight: 700;
-        letter-spacing: 0.12em;
+      }
+      .contact {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 4px 16px;
+        font-size: 8.3pt;
+        font-weight: 600;
+        color: var(--body);
+      }
+      .contact span { display: inline-flex; align-items: center; gap: 5px; }
+      .icon {
+        width: 10px; height: 10px; flex: none;
+        fill: none; stroke: var(--accent); stroke-width: 2.2;
+        stroke-linecap: round; stroke-linejoin: round;
+      }
+
+      /* Section headings */
+      h2 {
+        display: flex;
+        align-items: center;
+        gap: 9px;
+        margin: 13px 0 7px;
+        color: var(--ink);
+        font-size: 8.4pt;
+        font-weight: 800;
+        letter-spacing: 0.14em;
         text-transform: uppercase;
       }
+      h2::before {
+        width: 14px; height: 3px; border-radius: 2px;
+        background: var(--accent); content: '';
+      }
+      h2::after { flex: 1; height: 1px; background: var(--line); content: ''; }
 
-      .item { margin: 0 0 7px; break-inside: avoid; }
-
-      .item-head {
+      /* Project cards */
+      .grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+      }
+      .card {
         display: flex;
-        align-items: baseline;
-        justify-content: space-between;
-        gap: 12px;
+        flex-direction: column;
+        padding: 10px 12px 10px;
+        border: 1px solid var(--line);
+        border-top: 2.5px solid var(--accent);
+        border-radius: 8px;
+        background: var(--card);
       }
-
-      .item-head h3 {
+      .card h3 {
         margin: 0;
-        font-size: 10pt;
+        color: var(--ink);
+        font-size: 11pt;
+        font-weight: 800;
+        letter-spacing: -0.01em;
+      }
+      .card h3 small {
+        margin-left: 5px;
+        padding: 0 5px;
+        border-radius: 3px;
+        color: var(--muted);
+        font-size: 6.9pt;
         font-weight: 700;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+        background: #eef1f5;
+        vertical-align: 1.5px;
       }
-
-      .item-head h3 span {
-        color: #4a515c;
-        font-weight: 500;
+      .lede {
+        margin: 3px 0 5px;
+        color: var(--ink);
+        font-weight: 600;
+        font-size: 8.5pt;
       }
-
-      .item-head h3 a { color: inherit; text-decoration: none; }
-
-      .when {
-        flex: none;
-        color: #6b727d;
-        font-size: 8.6pt;
-        font-weight: 500;
+      .card ul { flex: 1; }
+      .pills { display: flex; gap: 5px; margin-top: 7px; }
+      .pills a {
+        display: inline-flex; align-items: center; gap: 4px;
+        padding: 1.5px 8px;
+        border: 1px solid var(--accent-line);
+        border-radius: 999px;
+        color: var(--accent);
+        font-size: 7.3pt;
+        font-weight: 700;
+        background: var(--accent-soft);
       }
+      .pills a::after { content: '↗'; font-size: 7pt; }
+      .inline-link { color: var(--accent); text-decoration: underline; text-underline-offset: 2px; }
 
-      ul { margin: 2px 0 0; padding-left: 14px; }
-
-      li { margin: 1.5px 0; }
-
-      li::marker { color: #b35a12; }
-
-      .skills {
+      /* Lower area */
+      .lower {
         display: grid;
-        grid-template-columns: 0.95in 1fr;
-        gap: 2px 10px;
-        margin: 0;
-      }
-
-      .skills dt { font-weight: 700; }
-
-      .skills dd { margin: 0; color: #333a45; }
-
-      .bottom {
-        display: grid;
-        grid-template-columns: 1fr 2.1in;
+        grid-template-columns: 1fr 2.4in;
         gap: 22px;
       }
 
-      .edu { margin: 0 0 6px; color: #333a45; }
+      .job { margin: 0 0 7px; }
+      .job-head {
+        display: flex;
+        align-items: baseline;
+        justify-content: space-between;
+        gap: 10px;
+      }
+      .job h3 {
+        margin: 0;
+        color: var(--ink);
+        font-size: 9.6pt;
+        font-weight: 700;
+      }
+      .org {
+        color: var(--accent);
+        font-size: 8.6pt;
+        font-weight: 600;
+        line-height: 1.3;
+      }
+      .org span { color: var(--muted); font-weight: 500; }
+      .when {
+        flex: none;
+        color: var(--muted);
+        font-size: 7.9pt;
+        font-weight: 500;
+        font-variant-numeric: tabular-nums;
+      }
+      .job ul { margin-top: 1px; }
 
-      .edu b { color: #1d2129; }
+      .label {
+        margin: 0 0 4px;
+        color: var(--ink);
+        font-size: 8.4pt;
+        font-weight: 700;
+      }
+      .chips { display: flex; flex-wrap: wrap; gap: 3px 4px; margin: 0 0 9px; }
+      .chips span {
+        padding: 1px 6px;
+        border-radius: 4px;
+        color: var(--ink);
+        font-size: 7.8pt;
+        font-weight: 600;
+        background: #eef1f5;
+      }
+      .outside { margin: 0; padding: 0; list-style: none; }
+      .outside li { margin: 0 0 3px; }
+      .outside b { color: var(--ink); font-weight: 700; }
 
-      .nowrap { white-space: nowrap; }
+      .edu { margin: 0 0 7px; }
+      .edu h3 { margin: 0; color: var(--ink); font-size: 9pt; font-weight: 700; }
+      .edu p { color: var(--accent); font-weight: 600; font-size: 8.4pt; }
+      .edu p span { color: var(--muted); font-weight: 500; white-space: nowrap; }
     </style>
   </head>
   <body>
     <div class="page">
       <header>
+        <img class="photo" src="photo.jpg" alt="" />
         <div>
           <h1>Michael Montalbano</h1>
-          <p class="role">Principal Engineer · AI and computer vision, end to end</p>
-        </div>
-        <div class="contact">
-          New York, NY · +1-914-589-4003<br />
-          <a href="mailto:montabano1@gmail.com">montabano1@gmail.com</a><br />
-          <a href="https://www.michaelmontalbano.com">michaelmontalbano.com</a> ·
-          <a href="https://github.com/montabano1">github.com/montabano1</a><br />
-          <a href="https://www.linkedin.com/in/michael-montalbano-47832114/">linkedin.com/in/michael-montalbano-47832114</a>
+          <p class="role">Principal Engineer · Forward Deployed Engineering</p>
+          <div class="contact">
+            <span><svg class="icon" viewBox="0 0 24 24"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.4 1.8.7 2.7a2 2 0 0 1-.5 2.1L8 9.8a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.5c.9.3 1.8.6 2.7.7a2 2 0 0 1 1.7 2z" /></svg>+1-914-589-4003</span>
+            <span><svg class="icon" viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="16" rx="2" /><path d="M2 7l10 6 10-6" /></svg><a href="mailto:montabano1@gmail.com">montabano1@gmail.com</a></span>
+            <span><svg class="icon" viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.5.5l3-3a5 5 0 0 0-7-7l-1.7 1.7" /><path d="M14 11a5 5 0 0 0-7.5-.5l-3 3a5 5 0 0 0 7 7l1.7-1.7" /></svg><a href="https://www.michaelmontalbano.com">michaelmontalbano.com</a></span>
+            <span><svg class="icon" viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 0 1 18 0z" /><circle cx="12" cy="10" r="3" /></svg>New York, NY</span>
+          </div>
         </div>
       </header>
 
-      <p class="summary">
-        I take systems from an ambiguous problem to production: hardware at customer sites, the
-        models that run on it, and the product people use &mdash; shipped fast by running fleets
-        of AI coding agents behind hard verification gates.
-      </p>
+      <section>
+        <h2>Projects</h2>
+        <div class="grid">
+          <div class="card">
+            <h3>PaddleScreens</h3>
+            <p class="lede">Computer vision match analytics for platform tennis &mdash; running at 8 clubs with 900+ match videos.</p>
+            <ul>
+              <li>Trained and fine-tuned models for ball tracking, player pose, and court segmentation, with 3D flight solving for line calls.</li>
+              <li>Industrial cameras activated by scanning a QR code on court; I wrote the recorder that runs on each camera to record, upload, and stream.</li>
+              <li>Super easy UI to see match statistics, replays, and close line calls.</li>
+            </ul>
+            <div class="pills"><a href="https://www.paddlescreens.com/demo">Live demo</a><a href="https://www.michaelmontalbano.com/paddlescreens/">Case study</a></div>
+          </div>
+          <div class="card">
+            <h3>Beleeg</h3>
+            <p class="lede">League software for amateur sports, with lebrAIn &mdash; an AI copilot that runs the league from a single sentence.</p>
+            <ul>
+              <li>43 actions &mdash; rain-outs, division emails, score disputes, dues &mdash; each one tap to confirm.</li>
+              <li>Its MCP server lets Claude and Meta Muse run leagues; among the first apps submitted to Muse.</li>
+              <li>Web and mobile, shipped solo in four months.</li>
+            </ul>
+            <div class="pills"><a href="https://beleeg.com">Live</a><a href="https://www.michaelmontalbano.com/beleeg/">Case study</a></div>
+          </div>
+          <div class="card">
+            <h3>RecruitPlan</h3>
+            <p class="lede">College lacrosse recruiting on real commitment data &mdash; used by Laxachusetts, one of the top girls&rsquo; programs in the country.</p>
+            <ul>
+              <li>Built the placement model, trained on ~34,000 real commitments, that places athletes across 12 tiers from top D1 to NAIA.</li>
+              <li>Daily data pipelines for 588 college programs and 62,000 roster players.</li>
+            </ul>
+            <div class="pills"><a href="https://www.recruitplan.com">Live</a></div>
+          </div>
+          <div class="card">
+            <h3>Tutorius Math</h3>
+            <p class="lede">A full stack iOS app providing premium tutoring to underprivileged students &mdash; 10,000+ downloads in its first year.</p>
+            <ul>
+              <li>Winner of the <a class="inline-link" href="https://bestmobileappawards.com/app-submission/tutorius-satact-math-prep">Best Mobile App Award</a>, September 2023.</li>
+              <li>Invented a Swift algorithm for inline LaTeX equations, answering an <a class="inline-link" href="https://stackoverflow.com/questions/53978178/swift-display-latex-math-expressions-inline/">unanswered Stack Overflow question</a>.</li>
+            </ul>
+            <div class="pills"><a href="https://apps.apple.com/us/app/tutorius-math/id1544620273">App Store</a><a href="https://tutoriusmath.com/">Website</a></div>
+          </div>
+        </div>
+      </section>
 
-      <h2>Experience</h2>
-      <div class="item">
-        <div class="item-head">
-          <h3>Principal Engineer <span>· Capital One</span></h3>
-          <span class="when">Apr 2025 – Present</span>
-        </div>
-        <ul>
-          <li>Lead the Account Opening iOS engineering team. &ldquo;Top Dog&rdquo; award for championing AI and collaboration across engineering.</li>
-        </ul>
-      </div>
-      <div class="item">
-        <div class="item-head">
-          <h3>E5 Software Engineer, Full Stack <span>· Meta</span></h3>
-          <span class="when">Mar 2020 – Dec 2024</span>
-        </div>
-        <ul>
-          <li>Built and shipped the Orion AR glasses prototype in C++, Kotlin, and React Native.</li>
-          <li>Integrated Ray-Ban Meta glasses, smart glasses, and smartwatches with Meta&rsquo;s iOS apps for peer-to-peer video calling (React, Objective-C, C++); led the Instagram iOS smartwatch team.</li>
-        </ul>
-      </div>
-      <div class="item">
-        <div class="item-head">
-          <h3>Senior iOS Developer / Project Manager <span>· EarthCam</span></h3>
-          <span class="when">2019 – 2020</span>
-        </div>
-        <ul>
-          <li>Oversaw four live-production iOS apps in Swift and Objective-C; cut crash frequency from 4.8% to 0.7% of users.</li>
-        </ul>
-      </div>
-      <div class="item">
-        <div class="item-head">
-          <h3>Math Professor <span>· University of Bridgeport</span></h3>
-          <span class="when">2011 – 2018</span>
-        </div>
-        <ul>
-          <li>Designed a placement exam and algorithm that cut initial math-class dropouts by 17%; taught differential equations and multivariable calculus.</li>
-        </ul>
-      </div>
+      <div class="lower">
+        <section>
+          <h2>Experience</h2>
+          <div class="job">
+            <div class="job-head"><h3>Principal Engineer</h3><span class="when">Apr 2025 – Present</span></div>
+            <p class="org">Capital One</p>
+            <ul>
+              <li>Account Opening iOS Engineering Team Lead.</li>
+              <li>&ldquo;Top Dog&rdquo; winner for AI Championing and Collaboration &mdash; an award for influence across all engineering teams.</li>
+            </ul>
+          </div>
+          <div class="job">
+            <div class="job-head"><h3>Software Engineer, Full Stack</h3><span class="when">Mar 2020 – Dec 2024</span></div>
+            <p class="org">Meta</p>
+            <ul>
+              <li>Built and shipped Orion Glasses &mdash; the first AR glasses prototype on the market &mdash; using C++, Kotlin, and React Native.</li>
+              <li>Integrated wearable devices (Ray-Ban Meta, smart glasses, smartwatch) with Meta&rsquo;s iOS family of apps for peer-to-peer video calling using React, Obj&#8209;C, and C++.</li>
+              <li>Led the Instagram iOS smartwatch team.</li>
+            </ul>
+          </div>
+          <div class="job">
+            <div class="job-head"><h3>Senior iOS Developer / Project Manager</h3><span class="when">2019 – 2020</span></div>
+            <p class="org">EarthCam, Inc. <span>· Saddle River, NJ</span></p>
+            <ul>
+              <li>Oversaw iOS development of four live-production apps in Swift and Obj&#8209;C.</li>
+              <li>Decreased crash frequency from 4.8% to 0.7% of all users.</li>
+            </ul>
+          </div>
+          <div class="job">
+            <div class="job-head"><h3>Math Professor</h3><span class="when">2011 – 2018</span></div>
+            <p class="org">University of Bridgeport <span>· Bridgeport, CT</span></p>
+            <ul>
+              <li>Developed a new placement exam with an algorithm that cut initial math-class dropouts by 17%.</li>
+              <li>Taught Differential Equations and Multivariable Calculus.</li>
+            </ul>
+          </div>
+        </section>
 
-      <h2>Products I build</h2>
-      <div class="item">
-        <div class="item-head">
-          <h3><a href="https://www.paddlescreens.com">PaddleScreens</a> <span>· founder and sole engineer · paddlescreens.com</span></h3>
-          <span class="when">2025 – Present</span>
-        </div>
-        <ul>
-          <li>Court cameras and computer vision for platform tennis at 8 clubs, 900+ match videos: members scan a QR code, play, and get a tracked, analyzed match. Next.js web, Expo mobile, live streaming.</li>
-          <li>Wrote the recorder that runs on each Axis camera (C, ACAP) &mdash; outbound-only, behind club routers; cutovers refuse to start until every camera checks in and roll back with one flag.</li>
-          <li>Vision pipeline: ball tracking (F1 .928 at precision .970), pose, court keypoints, and dual-view 3D flight solving for line calls; moving event detection into 3D added 24&ndash;57 points of recall with no new labels.</li>
-        </ul>
-      </div>
-      <div class="item">
-        <div class="item-head">
-          <h3><a href="https://beleeg.com">Beleeg</a> <span>· creator · beleeg.com</span></h3>
-          <span class="when">2026</span>
-        </div>
-        <ul>
-          <li>League software (web + mobile) whose Claude copilot, lebrAIn, turns a sentence into finished work across 43 actions &mdash; rain-outs, division emails, score disputes, dues, season rollovers &mdash; each one tap to confirm. Its MCP server lets Claude and Meta Muse run leagues too; among the first apps submitted to Muse, the day after it opened to connectors.</li>
-          <li>Multi-tenant Postgres, Stripe Connect payments, 33 sport templates, a live league migrated in; 832 commits in four months, solo.</li>
-        </ul>
-      </div>
-      <div class="item">
-        <div class="item-head">
-          <h3><a href="https://www.recruitplan.com">RecruitPlan</a> <span>· co-builder · recruitplan.com</span></h3>
-          <span class="when">2025 – Present</span>
-        </div>
-        <ul>
-          <li>Built the placement engine for college lacrosse recruiting: a gradient-boosted model trained on ~34,000 real commitments that places each athlete across 12 tiers, top Division I to NAIA. Laxachusetts, one of the top girls&rsquo; club programs in the country, runs its recruiting on the platform.</li>
-          <li>Built most of the daily scraping pipelines behind 588 college programs and 62,000 roster players, and the Stripe billing.</li>
-        </ul>
-      </div>
-      <div class="item">
-        <div class="item-head">
-          <h3><a href="https://tutoriusmath.com">Tutorius Math</a> <span>· creator · iOS</span></h3>
-          <span class="when">2020 – 2023</span>
-        </div>
-        <ul>
-          <li>SAT and ACT math prep app: 10,000+ downloads in its first year, rated 4.8 on the App Store; custom inline LaTeX rendering, adaptive topic ranking, Firebase and Stripe subscriptions.</li>
-        </ul>
-      </div>
-
-      <div class="bottom">
-        <div>
-          <h2>Skills</h2>
-          <dl class="skills">
-            <dt>Languages</dt>
-            <dd>TypeScript, Python, Swift, C++, C, Kotlin, Objective-C, SQL</dd>
-            <dt>AI and ML</dt>
-            <dd>LLM agents and tool use (Claude), MCP, computer vision, TensorRT, gradient boosting, evaluation design</dd>
-            <dt>Product stack</dt>
-            <dd>React, Next.js, React Native / Expo, Node, Postgres / Supabase, Firebase, GCP, AWS, Stripe</dd>
-            <dt>Hardware</dt>
-            <dd>Axis cameras (ACAP), edge video, live streaming (RTMP, SRT)</dd>
-          </dl>
-        </div>
-        <div>
-          <h2>Education</h2>
-          <p class="edu"><b>Bachelor&rsquo;s in Mathematics</b><br />Carnegie Mellon University, <span class="nowrap">2004 &ndash; 2008</span></p>
-          <p class="edu"><b>Master&rsquo;s in Math Education</b><br />Columbia University, <span class="nowrap">2009 &ndash; 2010</span></p>
-        </div>
+        <aside>
+          <section>
+            <h2>Skills</h2>
+            <p class="label">Technical</p>
+            <div class="chips">
+              <span>AI Agents</span><span>Claude</span><span>MCP</span><span>Computer Vision</span><span>ML</span>
+              <span>Python</span><span>TypeScript</span><span>React</span><span>Next.js</span><span>React Native</span>
+              <span>Swift</span><span>SwiftUI</span><span>C++</span><span>C</span><span>Kotlin</span><span>Obj&#8209;C</span>
+              <span>Node</span><span>PostgreSQL</span><span>Supabase</span><span>Firebase</span><span>AWS</span><span>GCP</span><span>Stripe</span>
+            </div>
+          </section>
+          <section>
+            <h2>Education</h2>
+            <div class="edu">
+              <h3>Bachelors in Mathematics</h3>
+              <p>Carnegie Mellon University <span>· 2004 – 2008</span></p>
+            </div>
+            <div class="edu">
+              <h3>Masters in Math Education</h3>
+              <p>Columbia University <span>· 2009 – 2010</span></p>
+            </div>
+          </section>
+          <section>
+            <h2>Outside work</h2>
+            <ul class="outside">
+              <li><b>Platform tennis</b> &mdash; peak APTA ranking of #14 in the country</li>
+              <li><b>Golf</b> &mdash; 4.3 handicap index</li>
+            </ul>
+          </section>
+        </aside>
       </div>
     </div>
   </body>
