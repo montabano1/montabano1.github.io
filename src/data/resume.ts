@@ -273,11 +273,11 @@ export const sequences: Sequence[] = [
     figure: 'signal',
     intro: 'Direct is good',
     detail:
-      'Email is the fastest way to reach me. LinkedIn and GitHub are available in the persistent navigation.',
+      'The contact form lands straight in my inbox, and I reply personally. Prefer your own email? Write to montabano1@gmail.com.',
     tags: ['Email', 'LinkedIn', 'GitHub'],
     action: {
       label: 'Send a signal',
-      href: 'mailto:montabano1@gmail.com',
+      href: '#contact',
     },
   },
 ]

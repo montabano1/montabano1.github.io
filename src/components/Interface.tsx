@@ -116,10 +116,7 @@ export function Interface({
         className="hero-copy"
         aria-hidden={selectedCategory ? 'true' : undefined}
       >
-        <a
-          className="availability"
-          href="mailto:montabano1@gmail.com?subject=Forward-deployed%20engineering%20role"
-        >
+        <a className="availability" href="#contact" data-contact="role">
           <i aria-hidden="true" />
           Open to forward-deployed engineering roles
         </a>
@@ -138,6 +135,7 @@ export function Interface({
           and <a href="#work-recruitplan">the recruiting model a top girls’ lacrosse club runs on</a>.
           Principal Engineer at Capital One; previously shipped Orion AR glasses at Meta.
         </p>
+        <div className="hero-actions">
         <a
           className="resume-button"
           href="/resume.pdf"
@@ -152,6 +150,14 @@ export function Interface({
           </span>
           <b aria-hidden="true">↗</b>
         </a>
+        <a className="contact-button" href="#contact" data-contact="general">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16v12H4z" /><path d="M4 7l8 6 8-6" /></svg>
+          <span>
+            Contact me
+            <small>Opens a quick form</small>
+          </span>
+        </a>
+        </div>
         <nav className="hero-links" aria-label="External links">
           <a href="https://github.com/montabano1" target="_blank" rel="noreferrer">
             GitHub <span aria-hidden="true">↗</span>

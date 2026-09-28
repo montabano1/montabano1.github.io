@@ -37,12 +37,9 @@ function trackClicks(event: MouseEvent) {
   const href = link.getAttribute('href') ?? ''
   const where = window.location.pathname
   if (href.endsWith('resume.pdf')) track('resume_open', { link_text: linkLabel(link), page_path: where })
-  else if (href.startsWith('mailto:')) {
-    track(link.classList.contains('availability') ? 'open_to_roles_click' : 'email_click', {
-      link_text: linkLabel(link),
-      page_path: where,
-    })
-  } else if (/^\/(paddlescreens|beleeg)\/?$/.test(href)) {
+  else if (link.classList.contains('availability')) track('open_to_roles_click', { page_path: where })
+  else if (href.startsWith('mailto:')) track('email_click', { link_text: linkLabel(link), page_path: where })
+  else if (/^\/(paddlescreens|beleeg)\/?$/.test(href)) {
     track('case_study_click', { case_study: href.replace(/\//g, ''), page_path: where })
   }
 }

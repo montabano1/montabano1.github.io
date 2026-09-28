@@ -1,0 +1,6 @@
+{
+  "name": "portfolio-contact",
+  "private": true,
+  "type": "module",
+  "description": "Contact-form endpoint for michaelmontalbano.com: validates, filters spam, and emails Michael via Resend."
+}

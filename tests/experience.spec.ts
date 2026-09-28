@@ -41,7 +41,9 @@ test('keeps contact reachable without interacting with WebGL', async ({ page }) 
   await expect(page.getByRole('heading', { name: 'Send a signal' })).toBeVisible({
     timeout: 10_000,
   })
-  await expect(page.getByRole('link', { name: 'Send a signal' })).toHaveAttribute(
+  await page.getByRole('link', { name: 'Send a signal' }).click()
+  await expect(page.getByRole('heading', { name: 'Get in touch' })).toBeVisible()
+  await expect(page.getByRole('link', { name: 'montabano1@gmail.com' })).toHaveAttribute(
     'href',
     'mailto:montabano1@gmail.com',
   )

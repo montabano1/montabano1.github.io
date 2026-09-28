@@ -1,4 +1,5 @@
 import { lazy, Suspense, type CSSProperties, useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { ContactDialog } from './components/ContactDialog'
 import { HelixPlaceholder } from './components/HelixPlaceholder'
 import { useReducedMotion } from './hooks/useReducedMotion'
 import { track } from './analytics'
@@ -44,6 +45,7 @@ export default function App() {
   const [loaded, setLoaded] = useState(false)
   const [sceneMounted, setSceneMounted] = useState(false)
   const [sceneReady, setSceneReady] = useState(false)
+  const [contactContext, setContactContext] = useState<string | null>(null)
   const handleSceneReady = useCallback(() => setSceneReady(true), [])
   const [transitioning, setTransitioning] = useState(false)
   const [transitionCategory, setTransitionCategory] = useState<CategoryId | null>(null)
@@ -60,6 +62,19 @@ export default function App() {
   useEffect(() => {
     const timer = window.setTimeout(() => setSceneMounted(true), 80)
     return () => window.clearTimeout(timer)
+  }, [])
+
+  // Any link to #contact — the hero button, the availability pill, the helix's
+  // contact card — opens the one contact form instead of changing the hash.
+  useEffect(() => {
+    const handleClick = (event: MouseEvent) => {
+      const link = (event.target as Element | null)?.closest?.('a[href="#contact"]')
+      if (!(link instanceof HTMLAnchorElement)) return
+      event.preventDefault()
+      setContactContext(link.dataset.contact ?? 'general')
+    }
+    document.addEventListener('click', handleClick)
+    return () => document.removeEventListener('click', handleClick)
   }, [])
 
   useEffect(() => {
@@ -229,6 +244,8 @@ export default function App() {
           onSelect={handleCategorySelect}
         />
       </div>
+
+      <ContactDialog context={contactContext} onClose={() => setContactContext(null)} />
 
       <SequencePanel
         sequence={activeSequence}
