@@ -2363,3 +2363,87 @@ a:focus-visible {
   .hero-links { margin-top: 12px; }
   .availability { margin-bottom: 10px; }
 }
+
+/* Panel actions share the badge's row, sized like the badge, so they're
+   visible without scrolling and take no extra height. */
+.panel-toprow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.panel-toprow .panel-eyebrow {
+  margin: 0;
+}
+
+.panel-toprow .signal-links {
+  gap: 6px;
+}
+
+.panel-toprow .signal-link {
+  gap: 5px;
+  margin: 0;
+  padding: 6px 10px;
+  border: 1px solid var(--sequence-color);
+  border-radius: 999px;
+  color: #10131b;
+  font-size: 8px;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  line-height: normal;
+  white-space: nowrap;
+  background: var(--sequence-color);
+  transition: transform 180ms var(--ease-out), background 180ms ease;
+}
+
+.panel-toprow .signal-link:hover { transform: translateY(-1px); }
+
+.panel-toprow .signal-link svg { width: 10px; stroke-width: 2.4; }
+
+.panel-toprow .signal-link.is-secondary {
+  color: var(--sequence-color);
+  background: color-mix(in srgb, var(--sequence-color) 10%, transparent);
+}
+
+/* A visible cue when a panel has more content below the fold. */
+.panel-fade {
+  z-index: 2;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  height: 64px;
+  padding-bottom: 10px;
+}
+
+.panel-more {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  color: #d8dee0;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  background: #0d1119;
+  border: 1px solid rgba(216, 222, 224, 0.18);
+  box-shadow: 0 0 18px 10px rgba(8, 11, 17, 0.85);
+}
+
+.panel-more svg {
+  width: 13px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2.2;
+  animation: more-bob 1.4s ease-in-out infinite;
+}
+
+@keyframes more-bob { 50% { transform: translateY(3px); } }
+
+@media (prefers-reduced-motion: reduce) {
+  .panel-more svg { animation: none; }
+}

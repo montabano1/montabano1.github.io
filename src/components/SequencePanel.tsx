@@ -12,6 +12,15 @@ type SequencePanelProps = {
   onClose: () => void
 }
 
+/** Compact button text for the row beside the badge; the full label stays the accessible name. */
+function shortLabel(label: string) {
+  return label
+    .replace(/^Read the case study$/i, 'Case study')
+    .replace(/^Try the live demo$/i, 'Live demo')
+    .replace(/^View on the /i, '')
+    .replace(/^(Visit|View) /i, '')
+}
+
 const UNIT_BY_CATEGORY: Record<CategoryId, string> = {
   experience: 'Chapter',
   work: 'Build',
@@ -200,9 +209,45 @@ function PanelView({
 
       <div className="panel-scroll" ref={scrollRef} onScroll={updateScrollHint}>
         <div className="panel-content">
-          <p className="panel-eyebrow">
-            {UNIT_BY_CATEGORY[sequence.categoryId]} {itemIndex + 1} of {itemCount}
-          </p>
+          <div className="panel-toprow">
+            <p className="panel-eyebrow">
+              {UNIT_BY_CATEGORY[sequence.categoryId]} {itemIndex + 1} of {itemCount}
+            </p>
+            {sequence.action || sequence.secondaryAction ? (
+              <div className="signal-links">
+                {sequence.action ? (
+                  <a
+                    className="signal-link"
+                    href={sequence.action.href}
+                    aria-label={sequence.action.label}
+                    {...(sequence.action.href.startsWith('http')
+                      ? { target: '_blank', rel: 'noreferrer' }
+                      : {})}
+                  >
+                    {shortLabel(sequence.action.label)}
+                    <svg viewBox="0 0 24 24" aria-hidden="true">
+                      <path d="M5 12h13M13 6l6 6-6 6" />
+                    </svg>
+                  </a>
+                ) : null}
+                {sequence.secondaryAction ? (
+                  <a
+                    className="signal-link is-secondary"
+                    href={sequence.secondaryAction.href}
+                    aria-label={sequence.secondaryAction.label}
+                    {...(sequence.secondaryAction.href.startsWith('http')
+                      ? { target: '_blank', rel: 'noreferrer' }
+                      : {})}
+                  >
+                    {shortLabel(sequence.secondaryAction.label)}
+                    <svg viewBox="0 0 24 24" aria-hidden="true">
+                      <path d="M5 12h13M13 6l6 6-6 6" />
+                    </svg>
+                  </a>
+                ) : null}
+              </div>
+            ) : null}
+          </div>
           <h2>{sequence.title}</h2>
           <p className="panel-intro">{sequence.intro}</p>
           {sequence.figure ? (
@@ -234,41 +279,14 @@ function PanelView({
             ))}
           </ul>
 
-          {sequence.action || sequence.secondaryAction ? (
-            <div className="signal-links">
-              {sequence.action ? (
-                <a
-                  className="signal-link"
-                  href={sequence.action.href}
-                  {...(sequence.action.href.startsWith('http')
-                    ? { target: '_blank', rel: 'noreferrer' }
-                    : {})}
-                >
-                  {sequence.action.label}
-                  <svg viewBox="0 0 24 24" aria-hidden="true">
-                    <path d="M5 12h13M13 6l6 6-6 6" />
-                  </svg>
-                </a>
-              ) : null}
-              {sequence.secondaryAction ? (
-                <a
-                  className="signal-link is-secondary"
-                  href={sequence.secondaryAction.href}
-                  {...(sequence.secondaryAction.href.startsWith('http')
-                    ? { target: '_blank', rel: 'noreferrer' }
-                    : {})}
-                >
-                  {sequence.secondaryAction.label}
-                  <svg viewBox="0 0 24 24" aria-hidden="true">
-                    <path d="M5 12h13M13 6l6 6-6 6" />
-                  </svg>
-                </a>
-              ) : null}
-            </div>
-          ) : null}
         </div>
       </div>
-      <div className={`panel-fade ${moreBelow ? 'is-visible' : ''}`} aria-hidden="true" />
+      <div className={`panel-fade ${moreBelow ? 'is-visible' : ''}`} aria-hidden="true">
+        <span className="panel-more">
+          More below
+          <svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6" /></svg>
+        </span>
+      </div>
     </aside>
   )
 }
